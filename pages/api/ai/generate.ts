@@ -1,7 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { requireAdmin } from "../../../lib/adminAuth";
 import { getFallbackColorName } from "../../../lib/colorNamer";
-import { buildKnowledgePromptContext } from "../../../lib/knowledgeBase";
+import {
+  buildKnowledgePromptContext,
+  generateKnowledgeProductDescription,
+  generateKnowledgeProductFaqs,
+  generateKnowledgePostDescription,
+  generateKnowledgePostFaqs,
+  generateKnowledgeSeoContent,
+} from "../../../lib/knowledgeBase";
 
 function stripHtml(html: string): string {
   if (!html) return "";
@@ -16,43 +23,69 @@ function stripHtml(html: string): string {
     .trim();
 }
 
-async function callGemini(prompt: string, apiKey: string) {
-  const models = [
-    "gemini-2.5-flash",
-    "gemini-2.0-flash",
-    "gemini-1.5-flash",
-    "gemini-3.8-flash",
-    "gemini-3.8-flash-lite",
-    "gemini-3.5-flash",
-  ];
+/**
+ * Lấy danh sách các GEMINI API KEY có trong .env (hỗ trợ phân tách bằng dấu phẩy hoặc các biến GEMINI_API_KEY_2...)
+ */
+function getGeminiApiKeys(): string[] {
+  const keys: string[] = [];
+  const primary = process.env.GEMINI_API_KEY || "";
+  if (primary) {
+    keys.push(...primary.split(",").map((k) => k.trim()).filter(Boolean));
+  }
+  for (let i = 2; i <= 10; i++) {
+    const k = process.env[`GEMINI_API_KEY_${i}`];
+    if (k && k.trim() && !keys.includes(k.trim())) {
+      keys.push(k.trim());
+    }
+  }
+  return keys;
+}
+
+/**
+ * Danh sách mô hình Gemini theo thứ tự ưu tiên (ưu tiên các model còn quota và không bị deprecated)
+ */
+const GEMINI_MODELS = [
+  "gemini-flash-lite-latest",
+  "gemini-3.5-flash-lite",
+  "gemini-3.1-flash-lite",
+  "gemini-3.8-flash",
+  "gemini-3.7-flash",
+  "gemini-3.6-flash",
+  "gemini-3.5-flash",
+];
+
+async function callGemini(prompt: string, apiKeys: string[]): Promise<string> {
   let lastError = "";
 
-  for (const model of models) {
-    try {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 30000);
+  for (const apiKey of apiKeys) {
+    for (const model of GEMINI_MODELS) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 25000);
 
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-        }),
-        signal: controller.signal,
-      });
-      clearTimeout(timeout);
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+          }),
+          signal: controller.signal,
+        });
+        clearTimeout(timeout);
 
-      const data = await res.json();
-      if (res.ok && data.candidates?.[0]?.content?.parts?.[0]?.text) {
-        return data.candidates[0].content.parts[0].text;
+        const data = await res.json();
+        if (res.ok && data.candidates?.[0]?.content?.parts?.[0]?.text) {
+          return data.candidates[0].content.parts[0].text;
+        }
+
+        const msg = data.error?.message || `Model ${model} trả về mã ${res.status}`;
+        lastError = msg;
+        console.warn(`Gemini [${model}] issue:`, msg.slice(0, 120));
+      } catch (err: any) {
+        lastError = err.message || `Lỗi kết nối tới ${model}`;
+        console.warn(`Gemini [${model}] fetch error:`, lastError);
       }
-
-      lastError = data.error?.message || `Model ${model} trả về mã ${res.status}`;
-      console.warn(`Gemini model ${model} issue:`, lastError);
-    } catch (err: any) {
-      lastError = err.message || `Lỗi kết nối tới ${model}`;
-      console.warn(`Gemini model ${model} fetch exception:`, lastError);
     }
   }
 
@@ -67,12 +100,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (!(await requireAdmin(req, res))) return;
 
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    return res.status(500).json({
-      error: "Chưa cấu hình GEMINI_API_KEY trong file .env của hệ thống.",
-    });
-  }
+  const apiKeys = getGeminiApiKeys();
+  const hasApiKey = apiKeys.length > 0;
 
   const {
     type,
@@ -121,13 +150,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
       }
 
-      const knowledgeContext = buildKnowledgePromptContext({
-        category,
-        productName: cleanTitle,
-        type: "description",
-      });
+      if (hasApiKey) {
+        try {
+          const knowledgeContext = buildKnowledgePromptContext({
+            category,
+            productName: cleanTitle,
+            type: "description",
+          });
 
-      const prompt = `Bạn là chuyên gia SEO bài viết tiếng Việt cho thương hiệu may đồng phục Univi (dongphucunivi.com).
+          const prompt = `Bạn là chuyên gia SEO bài viết tiếng Việt cho thương hiệu may đồng phục Univi (dongphucunivi.com).
 Dưới đây là BỘ TRI THỨC CHUẨN (Source of Truth) của Univi từ /docs/knowledge. Bạn BẮT BUỘC phải đọc và áp dụng chính xác các quy chuẩn, chất liệu và văn phong này:
 ${knowledgeContext}
 
@@ -145,20 +176,32 @@ Yêu cầu tạo Meta Description:
 7. Tuyệt đối KHÔNG đặt trong dấu ngoặc kép, KHÔNG dùng hashtag, KHÔNG chứa markdown hay icon.
 8. Chỉ trả về DUY NHẤT một đoạn văn bản mô tả ngắn, không thêm bất kỳ lời dẫn hay giải thích nào khác.`;
 
-      const rawDesc = await callGemini(prompt, apiKey);
-      let description = rawDesc.trim().replace(/^["']|["']$/g, "").trim();
+          const rawDesc = await callGemini(prompt, apiKeys);
+          let desc = rawDesc.trim().replace(/^["']|["']$/g, "").trim();
 
-      if (description.length > 195) {
-        const lastPeriod = description.lastIndexOf(".", 190);
-        if (lastPeriod > 140) {
-          description = description.slice(0, lastPeriod + 1);
-        } else {
-          const lastSpace = description.lastIndexOf(" ", 185);
-          description = (lastSpace > 140 ? description.slice(0, lastSpace) : description.slice(0, 185)) + "...";
+          if (desc.length > 195) {
+            const lastPeriod = desc.lastIndexOf(".", 190);
+            if (lastPeriod > 140) {
+              desc = desc.slice(0, lastPeriod + 1);
+            } else {
+              const lastSpace = desc.lastIndexOf(" ", 185);
+              desc = (lastSpace > 140 ? desc.slice(0, lastSpace) : desc.slice(0, 185)) + "...";
+            }
+          }
+
+          return res.status(200).json({ description: desc, fallback: false });
+        } catch (geminiErr: any) {
+          console.warn("Lỗi Gemini bài viết description, dùng Knowledge fallback:", geminiErr.message);
         }
       }
 
-      return res.status(200).json({ description });
+      // Knowledge Base Fallback
+      const fallbackDesc = generateKnowledgePostDescription({
+        title: cleanTitle,
+        content: cleanContent,
+        focusKeyword,
+      });
+      return res.status(200).json({ description: fallbackDesc, fallback: true });
     }
 
     // ----------------------------------------------------
@@ -184,16 +227,18 @@ Yêu cầu tạo Meta Description:
 
       const isProduct = type === "product_faqs" || !!productName;
 
-      let prompt = "";
-      if (isProduct) {
-        const knowledgeContext = buildKnowledgePromptContext({
-          category,
-          maSanPham,
-          productName: name,
-          type: "product_faqs",
-        });
+      if (hasApiKey) {
+        try {
+          let prompt = "";
+          if (isProduct) {
+            const knowledgeContext = buildKnowledgePromptContext({
+              category,
+              maSanPham,
+              productName: name,
+              type: "product_faqs",
+            });
 
-        prompt = `Bạn là chuyên gia tư vấn may đồng phục và chăm sóc khách hàng của thương hiệu may mặc Univi (dongphucunivi.com).
+            prompt = `Bạn là chuyên gia tư vấn may đồng phục và chăm sóc khách hàng của thương hiệu may mặc Univi (dongphucunivi.com).
 Dưới đây là BỘ TRI THỨC CHUẨN (Source of Truth) của Univi từ /docs/knowledge. Bạn BẮT BUỘC phải đọc kỹ và dựa vào các sự thật/chính sách thực tế này để tạo câu hỏi và trả lời chính xác:
 ${knowledgeContext}
 
@@ -227,14 +272,14 @@ Cấu trúc JSON:
   {"question": "Câu hỏi 1?", "answer": "Câu trả lời 1..."},
   {"question": "Câu hỏi 2?", "answer": "Câu trả lời 2..."}
 ]`;
-      } else {
-        const knowledgeContext = buildKnowledgePromptContext({
-          category,
-          productName: name,
-          type: "faqs",
-        });
+          } else {
+            const knowledgeContext = buildKnowledgePromptContext({
+              category,
+              productName: name,
+              type: "faqs",
+            });
 
-        prompt = `Bạn là chuyên gia nội dung và chăm sóc khách hàng cho thương hiệu may đồng phục Univi (dongphucunivi.com).
+            prompt = `Bạn là chuyên gia nội dung và chăm sóc khách hàng cho thương hiệu may đồng phục Univi (dongphucunivi.com).
 Dưới đây là BỘ TRI THỨC CHUẨN (Source of Truth) của Univi từ /docs/knowledge (gồm chính sách MOQ từ 10 áo, tiến độ, in ấn, chất liệu và FAQ chuẩn):
 ${knowledgeContext}
 
@@ -254,30 +299,41 @@ Cấu trúc JSON:
   {"question": "Câu hỏi 1?", "answer": "Câu trả lời 1..."},
   {"question": "Câu hỏi 2?", "answer": "Câu trả lời 2..."}
 ]`;
+          }
+
+          const rawFaqs = await callGemini(prompt, apiKeys);
+          let cleanJson = rawFaqs.replace(/```(?:json)?/gi, "").replace(/```/g, "").trim();
+
+          const match = cleanJson.match(/\[[\s\S]*\]/);
+          if (match) {
+            cleanJson = match[0];
+          }
+
+          let parsedFaqs = JSON.parse(cleanJson);
+
+          if (Array.isArray(parsedFaqs) && parsedFaqs.length > 0) {
+            const valid = parsedFaqs
+              .filter((item) => item && typeof item.question === "string" && typeof item.answer === "string")
+              .map((item) => ({
+                question: item.question.trim(),
+                answer: item.answer.trim(),
+              }));
+
+            if (valid.length > 0) {
+              return res.status(200).json({ faqs: valid, fallback: false });
+            }
+          }
+        } catch (geminiErr: any) {
+          console.warn("Lỗi Gemini FAQs, chuyển sang Knowledge fallback:", geminiErr.message);
+        }
       }
 
-      const rawFaqs = await callGemini(prompt, apiKey);
-      let cleanJson = rawFaqs.replace(/```(?:json)?/gi, "").replace(/```/g, "").trim();
+      // Knowledge Base Fallback
+      const fallbackFaqs = isProduct
+        ? generateKnowledgeProductFaqs({ productName: name, material })
+        : generateKnowledgePostFaqs({ title: name });
 
-      const match = cleanJson.match(/\[[\s\S]*\]/);
-      if (match) {
-        cleanJson = match[0];
-      }
-
-      let parsedFaqs = JSON.parse(cleanJson);
-
-      if (!Array.isArray(parsedFaqs)) {
-        throw new Error("Dữ liệu trả về không phải là mảng FAQ hợp lệ.");
-      }
-
-      parsedFaqs = parsedFaqs
-        .filter((item) => item && typeof item.question === "string" && typeof item.answer === "string")
-        .map((item) => ({
-          question: item.question.trim(),
-          answer: item.answer.trim(),
-        }));
-
-      return res.status(200).json({ faqs: parsedFaqs });
+      return res.status(200).json({ faqs: fallbackFaqs, fallback: true });
     }
 
     // ----------------------------------------------------
@@ -300,14 +356,16 @@ Cấu trúc JSON:
 
       const cleanContent = stripHtml(content || "");
 
-      const knowledgeContext = buildKnowledgePromptContext({
-        category,
-        maSanPham,
-        productName: name,
-        type: "product_description",
-      });
+      if (hasApiKey) {
+        try {
+          const knowledgeContext = buildKnowledgePromptContext({
+            category,
+            maSanPham,
+            productName: name,
+            type: "product_description",
+          });
 
-      const prompt = `Bạn là chuyên gia sáng tạo nội dung và SEO cho thương hiệu thời trang & may đồng phục cao cấp Univi (dongphucunivi.com).
+          const prompt = `Bạn là chuyên gia sáng tạo nội dung và SEO cho thương hiệu thời trang & may đồng phục cao cấp Univi (dongphucunivi.com).
 Dưới đây là BỘ TRI THỨC CHUẨN (Source of Truth) của Univi từ /docs/knowledge. Bạn BẮT BUỘC phải đọc và áp dụng chính xác các quy chuẩn, chất liệu và văn phong này:
 ${knowledgeContext}
 
@@ -331,20 +389,35 @@ Yêu cầu:
 6. Tuyệt đối KHÔNG đặt trong dấu ngoặc kép, KHÔNG dùng hashtag, KHÔNG markdown.
 7. Chỉ trả về DUY NHẤT một đoạn văn bản mô tả, không thêm bất kỳ lời dẫn hay giải thích nào khác.`;
 
-      const rawDesc = await callGemini(prompt, apiKey);
-      let description = rawDesc.trim().replace(/^["']|["']$/g, "").trim();
+          const rawDesc = await callGemini(prompt, apiKeys);
+          let desc = rawDesc.trim().replace(/^["']|["']$/g, "").trim();
 
-      if (description.length > 295) {
-        const lastPeriod = description.lastIndexOf(".", 280);
-        if (lastPeriod > 160) {
-          description = description.slice(0, lastPeriod + 1);
-        } else {
-          const lastSpace = description.lastIndexOf(" ", 270);
-          description = (lastSpace > 160 ? description.slice(0, lastSpace) : description.slice(0, 270)) + "...";
+          if (desc.length > 295) {
+            const lastPeriod = desc.lastIndexOf(".", 280);
+            if (lastPeriod > 160) {
+              desc = desc.slice(0, lastPeriod + 1);
+            } else {
+              const lastSpace = desc.lastIndexOf(" ", 270);
+              desc = (lastSpace > 160 ? desc.slice(0, lastSpace) : desc.slice(0, 270)) + "...";
+            }
+          }
+
+          return res.status(200).json({ description: desc, fallback: false });
+        } catch (geminiErr: any) {
+          console.warn("Lỗi Gemini product_description, chuyển sang Knowledge fallback:", geminiErr.message);
         }
       }
 
-      return res.status(200).json({ description });
+      // Knowledge Base Fallback
+      const fallbackDesc = generateKnowledgeProductDescription({
+        productName: name,
+        category,
+        material,
+        collarType,
+        shirtType,
+      });
+
+      return res.status(200).json({ description: fallbackDesc, fallback: true });
     }
 
     // ----------------------------------------------------
@@ -360,14 +433,16 @@ Yêu cầu:
         });
       }
 
-      const knowledgeContext = buildKnowledgePromptContext({
-        category,
-        maSanPham,
-        productName: name,
-        type: "product_seo_content",
-      });
+      if (hasApiKey) {
+        try {
+          const knowledgeContext = buildKnowledgePromptContext({
+            category,
+            maSanPham,
+            productName: name,
+            type: "product_seo_content",
+          });
 
-      const prompt = `Bạn là chuyên gia SEO On-page và Copywriter hàng đầu cho thương hiệu may đồng phục Univi (dongphucunivi.com).
+          const prompt = `Bạn là chuyên gia SEO On-page và Copywriter hàng đầu cho thương hiệu may đồng phục Univi (dongphucunivi.com).
 Dưới đây là BỘ TRI THỨC CHUẨN (Source of Truth) của Univi từ /docs/knowledge. Bạn BẮT BUỘC phải đọc và áp dụng chính xác các quy chuẩn về chất liệu vải, công nghệ UNI DRY và quy tắc claim:
 ${knowledgeContext}
 
@@ -394,15 +469,28 @@ Yêu cầu biên tập chuẩn SEO On-page:
    - Trả về DUY NHẤT mã HTML hợp lệ để hiển thị trực tiếp trong trình soạn thảo Rich Text (<p>, <h2>, <h3>, <ul>, <li>, <strong>, <table>, <img>, <a>...).
    - Tuyệt đối KHÔNG bọc trong khối code markdown (không dùng ba dấu backtick), KHÔNG kèm lời dẫn "Dưới đây là..." hay giải thích bên ngoài.`;
 
-      const generatedHtml = await callGemini(prompt, apiKey);
+          const generatedHtml = await callGemini(prompt, apiKeys);
 
-      // Làm sạch mã markdown block nếu có
-      let cleanHtml = generatedHtml
-        .replace(/^```(?:html)?\s*/i, "")
-        .replace(/\s*```$/i, "")
-        .trim();
+          // Làm sạch mã markdown block nếu có
+          let cleanHtml = generatedHtml
+            .replace(/^```(?:html)?\s*/i, "")
+            .replace(/\s*```$/i, "")
+            .trim();
 
-      return res.status(200).json({ content: cleanHtml });
+          return res.status(200).json({ content: cleanHtml, fallback: false });
+        } catch (geminiErr: any) {
+          console.warn("Lỗi Gemini product_seo_content, chuyển sang Knowledge fallback:", geminiErr.message);
+        }
+      }
+
+      // Knowledge Base Fallback
+      const fallbackHtml = generateKnowledgeSeoContent({
+        productName: name,
+        content: rawContent,
+        material,
+      });
+
+      return res.status(200).json({ content: fallbackHtml, fallback: true });
     }
 
     // ----------------------------------------------------
@@ -425,14 +513,15 @@ Yêu cầu biên tập chuẩn SEO On-page:
         });
       }
 
-      // Chuẩn bị danh sách fallback
+      // Chuẩn bị danh sách fallback ngay lập tức từ Color Dictionary
       const fallbackResults = colorItems.map((item) => ({
         id: item.id,
         name: getFallbackColorName(item.color1, item.color2),
       }));
 
-      try {
-        const prompt = `Bạn là chuyên gia màu sắc thời trang may mặc tại Việt Nam.
+      if (hasApiKey) {
+        try {
+          const prompt = `Bạn là chuyên gia màu sắc thời trang may mặc tại Việt Nam.
 Hãy đặt tên màu tiếng Việt chuẩn xác, sang trọng, thường dùng trong ngành thời trang thể thao, may đồng phục áo thun, polo cho các mã màu HEX sau:
 
 Danh sách mã màu:
@@ -448,39 +537,42 @@ Quy tắc đặt tên màu:
 ]
 Tuyệt đối KHÔNG bọc trong markdown code block, KHÔNG kèm lời dẫn nào khác.`;
 
-        const rawJson = await callGemini(prompt, apiKey);
-        let cleanJson = rawJson.replace(/```(?:json)?/gi, "").replace(/```/g, "").trim();
+          const rawJson = await callGemini(prompt, apiKeys);
+          let cleanJson = rawJson.replace(/```(?:json)?/gi, "").replace(/```/g, "").trim();
 
-        const match = cleanJson.match(/\[[\s\S]*\]/);
-        if (match) cleanJson = match[0];
+          const match = cleanJson.match(/\[[\s\S]*\]/);
+          if (match) cleanJson = match[0];
 
-        const parsed = JSON.parse(cleanJson);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          const map = new Map();
-          parsed.forEach((p) => {
-            if (p && p.id !== undefined && p.name) {
-              map.set(String(p.id), String(p.name).trim().replace(/^["']|["']$/g, ""));
-            }
-          });
+          const parsed = JSON.parse(cleanJson);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const map = new Map();
+            parsed.forEach((p) => {
+              if (p && p.id !== undefined && p.name) {
+                map.set(String(p.id), String(p.name).trim().replace(/^["']|["']$/g, ""));
+              }
+            });
 
-          const results = colorItems.map((item) => ({
-            id: item.id,
-            name: map.get(String(item.id)) || getFallbackColorName(item.color1, item.color2),
-          }));
+            const results = colorItems.map((item) => ({
+              id: item.id,
+              name: map.get(String(item.id)) || getFallbackColorName(item.color1, item.color2),
+            }));
 
-          return res.status(200).json({
-            name: results[0]?.name || fallbackResults[0].name,
-            results,
-          });
+            return res.status(200).json({
+              name: results[0]?.name || fallbackResults[0].name,
+              results,
+              fallback: false,
+            });
+          }
+        } catch (geminiErr: any) {
+          console.warn("Lỗi Gemini color_name, chuyển sang fallback color naming:", geminiErr.message);
         }
-      } catch (geminiErr) {
-        console.warn("Lỗi Gemini color_name, chuyển sang fallback color naming:", geminiErr);
       }
 
-      // Trả về fallback naming nếu Gemini gặp lỗi mạng hoặc định dạng
+      // Trả về fallback naming nếu Gemini gặp lỗi quota hoặc định dạng
       return res.status(200).json({
         name: fallbackResults[0].name,
         results: fallbackResults,
+        fallback: true,
       });
     }
   } catch (error: any) {

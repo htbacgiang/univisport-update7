@@ -232,3 +232,141 @@ export function buildKnowledgePromptContext(params: KnowledgeParams): string {
 
   return context;
 }
+
+/**
+ * Fallback tạo mô tả sản phẩm chuẩn SEO từ bộ Knowledge khi Gemini AI hết quota
+ */
+export function generateKnowledgeProductDescription(params: {
+  productName: string;
+  category?: string;
+  material?: string;
+  collarType?: string;
+  shirtType?: string;
+}): string {
+  const name = params.productName.trim();
+  const cat = params.category || detectCategoryFromText(name);
+  const mat = params.material ? params.material.trim() : "chất liệu thể thao cao cấp";
+
+  let desc = `${name} thiết kế hiện đại, may từ ${mat} tích hợp công nghệ thoát ẩm UNI DRY một chiều thoáng khí vượt trội, co giãn linh hoạt và phom dáng chuẩn chỉn chu, lý tưởng làm đồng phục doanh nghiệp và thể thao vận động.`;
+  if (desc.length > 280) {
+    desc = desc.slice(0, 277) + "...";
+  }
+  return desc;
+}
+
+/**
+ * Fallback tạo danh sách FAQ sản phẩm từ bộ Knowledge khi Gemini AI hết quota
+ */
+export function generateKnowledgeProductFaqs(params: {
+  productName: string;
+  material?: string;
+}): { question: string; answer: string }[] {
+  const name = params.productName.trim() || "sản phẩm đồng phục Univi";
+  const mat = params.material ? params.material.trim() : "vải thể thao cao cấp";
+
+  return [
+    {
+      question: `Số lượng đặt may tối thiểu (MOQ) cho ${name} là bao nhiêu?`,
+      answer: `Univi nhận đặt may từ 10 sản phẩm đối với các mẫu và chất liệu vải có sẵn. Với đơn hàng số lượng lớn cho chuỗi phòng tập, câu lạc bộ hoặc doanh nghiệp, Univi áp dụng chính sách chiết khấu và hỗ trợ tối ưu.`,
+    },
+    {
+      question: `Univi có hỗ trợ tư vấn thiết kế logo và lên mockup 3D cho ${name} không?`,
+      answer: `Có, Univi hỗ trợ tư vấn thiết kế bộ nhận diện và lên bản vẽ mockup 3D hoàn toàn miễn phí, giúp khách hàng duyệt chuẩn màu sắc, phom dáng và vị trí logo trước khi sản xuất hàng loạt.`,
+    },
+    {
+      question: `Chất liệu ${mat} của ${name} có ưu điểm gì nổi bật?`,
+      answer: `Sản phẩm sử dụng ${mat} ứng dụng công nghệ thoát ẩm UNI DRY cơ chế 1 chiều, giúp đẩy mồ hôi ra ngoài bề mặt để bay hơi nhanh, giữ bề mặt da luôn khô thoáng, co giãn thoải mái và an toàn lành tính cho da khi vận động liên tục.`,
+    },
+    {
+      question: `Univi sử dụng công nghệ in ấn nào và độ bền logo ra sao?`,
+      answer: `Univi ứng dụng các công nghệ in hiện đại như In PET (DTF), decal PU cao cấp và thêu vi tính sắc nét, đảm bảo hình in bám chắc, không bong tróc, chuẩn màu thương hiệu và bền bỉ qua nhiều chu kỳ giặt.`,
+    },
+    {
+      question: `Hướng dẫn giặt và bảo quản ${name} đúng cách để giữ độ bền lâu nhất?`,
+      answer: `Để bảo vệ sợi vải và hình in, bạn nên lộn trái trang phục trước khi giặt, ưu tiên giặt tay hoặc giặt máy chế độ nhẹ với nước mát dưới 40°C, phơi nơi râm mát và tránh ủi trực tiếp lên các chi tiết in ấn logo.`,
+    },
+  ];
+}
+
+/**
+ * Fallback tạo Meta Description bài viết từ bộ Knowledge khi Gemini AI hết quota
+ */
+export function generateKnowledgePostDescription(params: {
+  title: string;
+  content?: string;
+  focusKeyword?: string;
+}): string {
+  const title = params.title.trim();
+  const kw = params.focusKeyword?.trim();
+  let desc = "";
+  if (kw && !title.toLowerCase().includes(kw.toLowerCase())) {
+    desc = `${title} - Khám phá cẩm nang và giải pháp ${kw} chuyên nghiệp từ Univi, cam kết chất lượng, công nghệ thoát ẩm UNI DRY và phom dáng chỉn chu.`;
+  } else {
+    desc = `${title} - Cẩm nang tư vấn chuyên sâu về giải pháp may đồng phục thể thao, tiêu chuẩn chất liệu vải UNI DRY và quy trình may đo cao cấp từ Univi.`;
+  }
+  if (desc.length > 175) {
+    desc = desc.slice(0, 172) + "...";
+  }
+  return desc;
+}
+
+/**
+ * Fallback tạo FAQ bài viết từ bộ Knowledge khi Gemini AI hết quota
+ */
+export function generateKnowledgePostFaqs(params: {
+  title: string;
+}): { question: string; answer: string }[] {
+  return [
+    {
+      question: `Tại sao nên lựa chọn giải pháp may đồng phục chuyên nghiệp tại Univi?`,
+      answer: `Univi là đơn vị tiên phong cung cấp giải pháp đồng phục thể thao và doanh nghiệp với quy trình sản xuất trực tiếp tại xưởng, chất liệu vải ứng dụng công nghệ thoát ẩm UNI DRY thoáng mát và chính sách lưu rập hỗ trợ tái đặt đồng bộ.`,
+    },
+    {
+      question: `Univi nhận đặt may từ số lượng bao nhiêu sản phẩm?`,
+      answer: `Univi nhận đơn đặt may linh hoạt từ 10 sản phẩm trở lên đối với mẫu và chất liệu có sẵn, hỗ trợ tối đa cho các đội nhóm, câu lạc bộ và chuỗi phòng tập vừa và nhỏ.`,
+    },
+    {
+      question: `Khách hàng có được duyệt mẫu mockup trước khi sản xuất không?`,
+      answer: `Khách hàng được Univi tư vấn concept và hỗ trợ lên thiết kế mockup 3D miễn phí để duyệt chuẩn phom dáng, phối màu và vị trí in thêu logo trước khi tiến hành may hàng loạt.`,
+    },
+  ];
+}
+
+/**
+ * Fallback tối ưu cấu trúc nội dung chi tiết chuẩn SEO từ bộ Knowledge khi Gemini AI hết quota
+ */
+export function generateKnowledgeSeoContent(params: {
+  productName: string;
+  content: string;
+  material?: string;
+}): string {
+  const name = params.productName.trim() || "Sản phẩm đồng phục cao cấp Univi";
+  const mat = params.material ? params.material.trim() : "chất liệu thể thao cao cấp";
+
+  return `
+<h2>Đặc điểm nổi bật của ${name}</h2>
+<p>${name} là dòng sản phẩm đồng phục chuyên nghiệp được Univi phát triển với thiết kế hiện đại, phom dáng chuẩn tôn dáng người mặc và đường may tinh xảo, đáp ứng trọn vẹn tiêu chuẩn vận động lẫn nhận diện thương hiệu.</p>
+
+<h2>Chất liệu ${mat} & Công nghệ thoát ẩm UNI DRY</h2>
+<p>Sản phẩm sử dụng ${mat} chọn lọc kỹ lưỡng, mang lại trải nghiệm êm ái và bảo vệ làn da tối ưu:</p>
+<ul>
+  <li><strong>Công nghệ thoát ẩm UNI DRY:</strong> Cơ chế dẫn ẩm 1 chiều giúp hút mồ hôi từ da và phân tán ra bề mặt ngoài vải để bay hơi nhanh chóng, không gây bết dính.</li>
+  <li><strong>Co giãn linh hoạt:</strong> Đảm bảo khả năng đàn hồi và phục hồi phom dáng xuất sắc sau nhiều lần giặt.</li>
+  <li><strong>Chất liệu an toàn:</strong> Sợi vải được xử lý an toàn, lành tính cho làn da, thoáng khí và hạn chế mùi ẩm mốc.</li>
+</ul>
+
+<h2>Ứng dụng & Hướng dẫn bảo quản chuẩn</h2>
+<p>Phù hợp cho đồng phục huấn luyện viên, hội viên thể thao, đội nhóm vận động và đồng phục sự kiện doanh nghiệp.</p>
+<ul>
+  <li>Nên lộn trái áo khi giặt để bảo vệ mặt vải và chi tiết in logo.</li>
+  <li>Giặt tay hoặc giặt máy ở chế độ nhẹ nhàng với nước mát dưới 40°C.</li>
+  <li>Phơi ở nơi thoáng gió, râm mát, tránh ánh nắng trực tiếp gay gắt.</li>
+  <li>Không là/ủi trực tiếp lên các chi tiết in ấn hoặc thêu logo.</li>
+</ul>
+
+<div class="univi-cta-box" style="margin-top: 24px; padding: 16px 20px; background: #f8fafc; border-left: 4px solid #10b981; border-radius: 6px;">
+  <h3 style="margin-top: 0; color: #0f172a;">Liên hệ tư vấn & Thiết kế Mockup 3D miễn phí</h3>
+  <p style="margin-bottom: 0; color: #475569;">Đồng Phục Univi nhận may đơn từ 10 sản phẩm, hỗ trợ tư vấn chất liệu mẫu thực tế và thiết kế mockup 3D theo đúng nhận diện thương hiệu. Hãy liên hệ ngay với đội ngũ tư vấn Univi qua hotline hoặc Zalo để được phục vụ chu đáo nhất.</p>
+</div>
+`.trim();
+}
