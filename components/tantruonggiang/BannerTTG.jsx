@@ -97,8 +97,6 @@ const slides = [
 
   {
     type: "video",
-    image: "/images/slide-03.webp",
-    mobileImage: "/images/slide-03.jpg",
     videoSrc: "/video-univi.mp4",
     videoLabel: "Video giới thiệu đồng phục thể thao Univi",
     secondaryLabel: "Xem video",

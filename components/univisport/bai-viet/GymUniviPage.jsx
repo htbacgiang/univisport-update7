@@ -399,7 +399,7 @@ const projects = [
     imagePosition: 'object-[50%_40%]',
     text: 'Đồng phục chọn theo nhận diện của phòng tập, sử dụng mẫu polo thể thao AGPL17.',
     feedback: '/feedback/feedback-one-coach-fitnnes-bac-ninh',
-    article: '/bai-viet/feedback-dong-phuc-one-coach-fitness-bac-ninh-or-univi',
+    article: '/bai-viet/feedback-dong-phuc-one-coach-fitness-bac-ninh',
   },
   {
     name: 'Welly Fitness',

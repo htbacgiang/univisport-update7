@@ -1093,3 +1093,129 @@
     background: #1e4a7f;
   }
 }
+
+/* ── AI Assistant Controls ── */
+.fieldHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.375rem;
+}
+
+.aiActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #105d97 0%, #2563eb 50%, #7c3aed 100%);
+  background-size: 200% 200%;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25);
+  white-space: nowrap;
+}
+
+.aiActionBtn:hover:not(:disabled) {
+  background-position: right center;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.35);
+  transform: translateY(-1px);
+}
+
+.aiActionBtn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.aiActionBtnSecondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #4f46e5;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.aiActionBtnSecondary:hover:not(:disabled) {
+  background: #ede9fe;
+  border-color: #c4b5fd;
+  color: #4338ca;
+  box-shadow: 0 2px 6px rgba(109, 40, 217, 0.15);
+}
+
+.aiActionBtnSecondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.colorAiBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: #7c3aed;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.colorAiBtn:hover:not(:disabled) {
+  background: #ede9fe;
+  border-color: #c4b5fd;
+  color: #6d28d9;
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.2);
+}
+
+.colorAiBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.colorAiBtnSm {
+  width: 28px;
+  height: 28px;
+}
+
+.sectionHeaderRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.sectionHeaderRow .sectionTitle {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}

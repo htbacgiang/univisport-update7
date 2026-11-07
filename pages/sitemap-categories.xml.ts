@@ -18,7 +18,7 @@ const categories = [
 
   // Đồng phục doanh nghiệp
   "dong-phuc-doanh-nghiep",
-  "polo-doanh-nghiep",
+  "dong-phuc-polo",
   "dong-phuc-so-mi",
   "dong-phuc-vest-cong-so",
   "dong-phuc-teambuilding",

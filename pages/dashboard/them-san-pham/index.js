@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Editor from '../../../components/univisport/Editor';
 import { debounce } from 'lodash';
-import { FileText, Image, Tag, Star, FileEdit, Upload, X, AlertCircle, Database, Plus, Lock, Unlock, Link as LinkIcon, GripVertical, HelpCircle, Pipette } from 'lucide-react';
+import { FileText, Image, Tag, Star, FileEdit, Upload, X, AlertCircle, Database, Plus, Lock, Unlock, Link as LinkIcon, GripVertical, HelpCircle, Pipette, Sparkles, Loader2 } from 'lucide-react';
 import styles from '../../../styles/add-product.module.css';
 import { ReactSortable } from 'react-sortablejs';
 import { getProductLineOptions, getCollarTypeOptions } from '../../../lib/productTaxonomy';
@@ -200,6 +200,13 @@ export default function CreateJSONProductPage() {
   const [eyeDropperState, setEyeDropperState] = useState({ open: false, index: null, colorKey: null, hoveredColor: null });
   const eyeDropperCanvasRef = useRef(null);
   const eyeDropperImgRef = useRef(null);
+
+  // AI assistant loading states
+  const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
+  const [isOptimizingContent, setIsOptimizingContent] = useState(false);
+  const [namingColorIndex, setNamingColorIndex] = useState(null);
+  const [isBatchNamingColors, setIsBatchNamingColors] = useState(false);
+  const [isGeneratingFaqs, setIsGeneratingFaqs] = useState(false);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -426,6 +433,185 @@ export default function CreateJSONProductPage() {
   const handleContentChange = (content) => {
     const sanitizedContent = typeof content === 'string' ? content : '';
     dispatch({ type: 'UPDATE_FIELD', field: 'content', value: sanitizedContent });
+  };
+
+  // Dùng Gemini AI tạo mô tả sản phẩm dựa trên các dữ liệu đang nhập
+  const handleGenerateAiDescription = async () => {
+    if (!formData.name?.trim()) {
+      toast.warning('Vui lòng nhập Tên sản phẩm trước khi tạo mô tả bằng Gemini AI!');
+      return;
+    }
+
+    setIsGeneratingDesc(true);
+    try {
+      const activeColors = images
+        .map((img) => img.name)
+        .filter((n) => n && !n.startsWith('Màu '));
+
+      const { data } = await axios.post('/api/ai/generate', {
+        type: 'product_description',
+        productName: formData.name,
+        category: formData.categoryNameVN || formData.category,
+        material: formData.material,
+        productLine: formData.productLine,
+        collarType: formData.collarType,
+        shirtType: formData.shirtType,
+        colors: activeColors,
+        content: formData.content,
+      });
+
+      if (data?.description) {
+        dispatch({ type: 'UPDATE_FIELD', field: 'description', value: data.description });
+        toast.success('Đã tạo mô tả sản phẩm bằng Gemini AI thành công!');
+      }
+    } catch (err) {
+      console.error('Lỗi tạo mô tả bằng AI:', err);
+      toast.error(err.response?.data?.error || 'Không thể tạo mô tả bằng Gemini AI. Vui lòng thử lại!');
+    } finally {
+      setIsGeneratingDesc(false);
+    }
+  };
+
+  // Dùng Gemini AI chỉnh sửa và tối ưu nội dung chi tiết hiện có chuẩn SEO
+  const handleOptimizeSeoContent = async () => {
+    const currentContent = (formData.content || '').trim();
+    const strippedText = currentContent.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+
+    if (strippedText.length < 20) {
+      toast.warning('Vui lòng nhập hoặc có sẵn nội dung chi tiết (ít nhất 20 ký tự) trước khi tối ưu chuẩn SEO!');
+      return;
+    }
+
+    setIsOptimizingContent(true);
+    try {
+      const { data } = await axios.post('/api/ai/generate', {
+        type: 'product_seo_content',
+        content: currentContent,
+        productName: formData.name,
+        category: formData.categoryNameVN || formData.category,
+        material: formData.material,
+      });
+
+      if (data?.content) {
+        dispatch({ type: 'UPDATE_FIELD', field: 'content', value: data.content });
+        toast.success('Đã tối ưu nội dung chi tiết chuẩn SEO bằng Gemini AI!');
+      }
+    } catch (err) {
+      console.error('Lỗi tối ưu SEO bằng AI:', err);
+      toast.error(err.response?.data?.error || 'Không thể tối ưu nội dung chuẩn SEO. Vui lòng thử lại!');
+    } finally {
+      setIsOptimizingContent(false);
+    }
+  };
+
+  // Dùng AI tạo tên màu cho một hình ảnh dựa theo mã màu (color1, color2) đã chọn
+  const handleGenerateColorName = async (index) => {
+    const targetImg = images[index];
+    if (!targetImg) return;
+
+    const color1 = targetImg.color1 || '#000000';
+    const color2 = targetImg.color2 || '';
+
+    setNamingColorIndex(index);
+    try {
+      const { data } = await axios.post('/api/ai/generate', {
+        type: 'color_name',
+        color1,
+        color2,
+      });
+
+      if (data?.name) {
+        handleColorNameChange(index, data.name);
+        toast.success(`Đã tạo tên màu: "${data.name}"`);
+      }
+    } catch (err) {
+      console.error('Lỗi tạo tên màu bằng AI:', err);
+      toast.error(err.response?.data?.error || 'Không thể tạo tên màu bằng AI. Vui lòng thử lại!');
+    } finally {
+      setNamingColorIndex(null);
+    }
+  };
+
+  // Dùng AI đặt tên màu cho toàn bộ ảnh trong bảng màu
+  const handleBatchGenerateColorNames = async () => {
+    if (!images || images.length === 0) {
+      toast.warning('Chưa có ảnh nào để đặt tên màu!');
+      return;
+    }
+
+    setIsBatchNamingColors(true);
+    try {
+      const colorItems = images.map((img, idx) => ({
+        id: idx,
+        color1: img.color1 || '#000000',
+        color2: img.color2 || '',
+      }));
+
+      const { data } = await axios.post('/api/ai/generate', {
+        type: 'color_name',
+        colors: colorItems,
+      });
+
+      if (data?.results && Array.isArray(data.results)) {
+        const resultsMap = new Map();
+        data.results.forEach((r) => resultsMap.set(Number(r.id), r.name));
+
+        setImages((prev) =>
+          prev.map((img, idx) => ({
+            ...img,
+            name: resultsMap.get(idx) || img.name,
+          }))
+        );
+
+        toast.success(`Đã tự động đặt tên màu AI cho ${data.results.length} hình ảnh!`);
+      }
+    } catch (err) {
+      console.error('Lỗi đặt tên màu hàng loạt bằng AI:', err);
+      toast.error(err.response?.data?.error || 'Không thể tạo tên màu tự động. Vui lòng thử lại!');
+    } finally {
+      setIsBatchNamingColors(false);
+    }
+  };
+
+  // Dùng Gemini AI tạo danh sách câu hỏi thường gặp (FAQ) cho sản phẩm
+  const handleGenerateAiFaqs = async () => {
+    if (!formData.name?.trim()) {
+      toast.warning('Vui lòng nhập Tên sản phẩm trước khi tạo FAQ bằng Gemini AI!');
+      return;
+    }
+
+    setIsGeneratingFaqs(true);
+    try {
+      const activeColors = images
+        .map((img) => img.name)
+        .filter((n) => n && !n.startsWith('Màu '));
+
+      const { data } = await axios.post('/api/ai/generate', {
+        type: 'product_faqs',
+        productName: formData.name,
+        category: formData.categoryNameVN || formData.category,
+        material: formData.material,
+        productLine: formData.productLine,
+        collarType: formData.collarType,
+        shirtType: formData.shirtType,
+        colors: activeColors,
+        description: formData.description,
+        content: formData.content,
+      });
+
+      if (data?.faqs && Array.isArray(data.faqs) && data.faqs.length > 0) {
+        dispatch({
+          type: 'SET_FAQS',
+          faqs: data.faqs,
+        });
+        toast.success(`Đã tạo ${data.faqs.length} câu hỏi thường gặp bằng Gemini AI thành công!`);
+      }
+    } catch (err) {
+      console.error('Lỗi tạo FAQ bằng AI:', err);
+      toast.error(err.response?.data?.error || 'Không thể tạo FAQ bằng Gemini AI. Vui lòng thử lại!');
+    } finally {
+      setIsGeneratingFaqs(false);
+    }
   };
 
   // Handle category change
@@ -1083,15 +1269,36 @@ export default function CreateJSONProductPage() {
             </div>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>
-                Mô tả <span className={styles.required}>*</span>
-              </label>
+              <div className={styles.fieldHeaderRow}>
+                <label className={styles.label}>
+                  Mô tả <span className={styles.required}>*</span>
+                </label>
+                <button
+                  type="button"
+                  onClick={handleGenerateAiDescription}
+                  disabled={isGeneratingDesc}
+                  className={styles.aiActionBtn}
+                  title="Dùng Gemini AI tạo mô tả ngắn dựa theo các dữ liệu sản phẩm đang nhập"
+                >
+                  {isGeneratingDesc ? (
+                    <>
+                      <Loader2 size={13} className={styles.spin} />
+                      Đang tạo mô tả...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles size={13} />
+                      Tạo mô tả bằng AI
+                    </>
+                  )}
+                </button>
+              </div>
               <textarea
                 value={formData.description}
                 onChange={handleDescriptionChange}
                 className={styles.textarea}
                 rows={3}
-                placeholder="Nhập mô tả sản phẩm"
+                placeholder="Nhập mô tả sản phẩm hoặc bấm 'Tạo mô tả bằng AI' để tự động tạo"
                 required
                 aria-label="Mô tả sản phẩm"
               />
@@ -1099,11 +1306,32 @@ export default function CreateJSONProductPage() {
           </div>
 
           <div className={styles.formSection}>
-            <h3 className={styles.sectionTitle}>
-              {/* eslint-disable-next-line jsx-a11y/alt-text */}
-              <Image className={styles.sectionIcon} />
-              Hình ảnh sản phẩm
-            </h3>
+            <div className={styles.sectionHeaderRow}>
+              <h3 className={styles.sectionTitle}>
+                {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                <Image className={styles.sectionIcon} />
+                Hình ảnh sản phẩm
+              </h3>
+              <button
+                type="button"
+                onClick={handleBatchGenerateColorNames}
+                disabled={isBatchNamingColors}
+                className={styles.aiActionBtnSecondary}
+                title="Dùng Gemini AI tự động đặt tên màu cho tất cả ảnh dựa trên bảng màu đã chọn"
+              >
+                {isBatchNamingColors ? (
+                  <>
+                    <Loader2 size={13} className={styles.spin} />
+                    Đang tạo tên màu...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles size={13} />
+                    Tạo tên màu AI cho tất cả
+                  </>
+                )}
+              </button>
+            </div>
 
             <div className={styles.imageInputContainer}>
               <div className={styles.imageInputSection}>
@@ -1131,6 +1359,19 @@ export default function CreateJSONProductPage() {
                         placeholder="VD: Đen, Trắng..."
                         title="Tên màu hiển thị cho khách hàng"
                       />
+                      <button
+                        type="button"
+                        onClick={() => handleGenerateColorName(0)}
+                        disabled={namingColorIndex === 0}
+                        className={styles.colorAiBtn}
+                        title="Tạo tên màu theo bảng màu đã chọn bằng AI"
+                      >
+                        {namingColorIndex === 0 ? (
+                          <Loader2 size={14} className={styles.spin} />
+                        ) : (
+                          <Sparkles size={14} />
+                        )}
+                      </button>
                     </div>
 
                     <div className={styles.dualColorGroup}>
@@ -1297,6 +1538,19 @@ export default function CreateJSONProductPage() {
                               placeholder="VD: Đỏ, Xanh..."
                               title="Tên màu"
                             />
+                            <button
+                              type="button"
+                              onClick={() => handleGenerateColorName(index + 1)}
+                              disabled={namingColorIndex === index + 1}
+                              className={`${styles.colorAiBtn} ${styles.colorAiBtnSm}`}
+                              title="Tạo tên màu theo bảng màu đã chọn bằng AI"
+                            >
+                              {namingColorIndex === index + 1 ? (
+                                <Loader2 size={13} className={styles.spin} />
+                              ) : (
+                                <Sparkles size={13} />
+                              )}
+                            </button>
                           </div>
                           <div className={styles.dualColorGroup}>
                             <span className={styles.colorLabel}>Màu 1</span>
@@ -1813,10 +2067,31 @@ export default function CreateJSONProductPage() {
           </div>
 
           <div className={styles.formSection}>
-            <h3 className={styles.sectionTitle}>
-              <FileEdit className={styles.sectionIcon} />
-              Nội dung chi tiết
-            </h3>
+            <div className={styles.sectionHeaderRow}>
+              <h3 className={styles.sectionTitle}>
+                <FileEdit className={styles.sectionIcon} />
+                Nội dung chi tiết
+              </h3>
+              <button
+                type="button"
+                onClick={handleOptimizeSeoContent}
+                disabled={isOptimizingContent}
+                className={styles.aiActionBtn}
+                title="Dùng Gemini AI biên tập lại nội dung chi tiết hiện có chuẩn SEO On-page"
+              >
+                {isOptimizingContent ? (
+                  <>
+                    <Loader2 size={13} className={styles.spin} />
+                    Đang tối ưu chuẩn SEO...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles size={13} />
+                    Tối ưu chuẩn SEO bằng AI
+                  </>
+                )}
+              </button>
+            </div>
 
             <div className={styles.formGroup}>
               <label className={styles.label}>Nội dung</label>
@@ -1828,10 +2103,31 @@ export default function CreateJSONProductPage() {
           </div>
 
           <div className={styles.formSection}>
-            <h3 className={styles.sectionTitle}>
-              <HelpCircle className={styles.sectionIcon} />
-              Câu hỏi thường gặp (FAQ)
-            </h3>
+            <div className={styles.sectionHeaderRow}>
+              <h3 className={styles.sectionTitle}>
+                <HelpCircle className={styles.sectionIcon} />
+                Câu hỏi thường gặp (FAQ)
+              </h3>
+              <button
+                type="button"
+                onClick={handleGenerateAiFaqs}
+                disabled={isGeneratingFaqs}
+                className={styles.aiActionBtn}
+                title="Dùng Gemini AI tự động tạo các câu hỏi thường gặp cho sản phẩm"
+              >
+                {isGeneratingFaqs ? (
+                  <>
+                    <Loader2 size={13} className={styles.spin} />
+                    Đang tạo FAQ...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles size={13} />
+                    Tạo FAQ bằng AI
+                  </>
+                )}
+              </button>
+            </div>
 
             <div className={styles.faqList}>
               {(formData.faqs || []).map((faq, index) => (
