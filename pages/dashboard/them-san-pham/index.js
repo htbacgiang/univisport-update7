@@ -156,7 +156,7 @@ function reducer(state, action) {
 // Categories
 const categories = [
   { key: 'dong-phuc-gym', categoryNameVN: 'Đồng phục Gym', category: 'dong-phuc-gym' },
-  { key: 'dong-phuc-yoga-pilates', categoryNameVN: 'Đồng phục Yoga – Pilates', category: 'dong-phuc-yoga-pilates' },
+  { key: 'dong-phuc-yoga', categoryNameVN: 'Đồng phục Yoga', category: 'dong-phuc-yoga' },
   { key: 'dong-phuc-pilates', categoryNameVN: 'Đồng phục Pilates', category: 'dong-phuc-pilates' },
   { key: 'dong-phuc-pickleball', categoryNameVN: 'Đồng phục Pickleball', category: 'dong-phuc-pickleball' },
   { key: 'dong-phuc-chay-bo', categoryNameVN: 'Đồng phục Chạy bộ', category: 'dong-phuc-chay-bo' },

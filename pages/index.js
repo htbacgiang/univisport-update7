@@ -22,6 +22,7 @@ import Feedback from "../models/Feedback";
 import HomepageSection from "../models/HomepageSection";
 import HomepageFaqSettings from "../models/HomepageFaqSettings";
 import { DEFAULT_HOMEPAGE_FAQS } from "../data/homepageFaqs";
+import { normalizeCategoryHref } from "../lib/siteCategories";
 
 // FAQComponent dùng window.AudioContext + Facebook SDK → không SSR được
 const FAQComponent = dynamic(
@@ -549,6 +550,7 @@ const SECTION_CATEGORY_ALIASES = {
     "qua-tang-phu-kien-doanh-nghiep",
     "phu-kien",
   ],
+  "dong-phuc-yoga": ["dong-phuc-yoga"],
 };
 
 const CORPORATE_CATEGORY_MAP = {
@@ -608,8 +610,8 @@ const FALLBACK_SECTIONS = [
   {
     _id: "yoga",
     title: "Đồng Phục Yoga",
-    category: "dong-phuc-yoga-pilates",
-    viewAllLink: "/dong-phuc-yoga-pilates",
+    category: "dong-phuc-yoga",
+    viewAllLink: "/dong-phuc-yoga",
     productLimit: 12,
   },
   {
@@ -657,7 +659,7 @@ export async function getServerSideProps() {
       return {
         _id: String(section._id),
         title: section.title,
-        viewAllLink: section.viewAllLink,
+        viewAllLink: normalizeCategoryHref(section.viewAllLink),
         sectionBanner: section.sectionBanner
           ? {
             image: section.sectionBanner.image || "",

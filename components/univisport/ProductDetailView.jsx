@@ -28,6 +28,7 @@ import { parseToc } from '../../utils/toc';
 import { normalizeInternalLinkAttributes } from '../../utils/internalLinks';
 import { getProductLineLabel } from '../../lib/productTaxonomy';
 import { ENTERPRISE_FLAT_SLUGS } from '../../lib/enterpriseFlatSlugs';
+import { getCategoryPath, getCategoryDisplayName } from '../../lib/siteCategories';
 
 const ENTERPRISE_CATEGORY_SLUG = 'dong-phuc-doanh-nghiep';
 
@@ -103,7 +104,7 @@ function Lightbox({ photos, currentIndex, onClose, onNext, onPrev }) {
 // ─── Helper: map category slug → tên tiếng Việt ───────────────
 const CATEGORY_NAMES = {
   'dong-phuc-gym': 'Đồng Phục Gym',
-  'dong-phuc-yoga-pilates': 'Đồng Phục Yoga',
+  'dong-phuc-yoga': 'Đồng Phục Yoga',
   'dong-phuc-pilates': 'Đồng Phục Pilates',
   'dong-phuc-pickleball': 'Đồng Phục Pickleball',
   'dong-phuc-ao-gio': 'Đồng Phục Áo Gió',
@@ -262,7 +263,7 @@ function Breadcrumb({ product }) {
   const category = product?.category || 'Đồng phục';
   const categorySlug = category.toLowerCase().replace(/\s+/g, '-');
   const productName = product?.name || 'Sản phẩm';
-  const categoryNameVN = product?.categoryNameVN || 'Đồng phục';
+  const categoryNameVN = getCategoryDisplayName(product?.category, product?.categoryNameVN) || CATEGORY_NAMES[product?.category] || 'Đồng phục';
 
   // Đồng phục Doanh nghiệp có thêm 1 tầng category con (productLine) giữa category
   // và sản phẩm — chỉ áp dụng riêng category này, breadcrumb của Gym/category khác
@@ -274,7 +275,7 @@ function Breadcrumb({ product }) {
 
   const displayCategorySlug = isEnterpriseProduct
     ? (ENTERPRISE_FLAT_SLUGS[product.productLine] || `${categorySlug}/${product.productLine}`)
-    : categorySlug;
+    : getCategoryPath(categorySlug);
 
   const displayCategoryName = isEnterpriseProduct && enterpriseLineLabel
     ? enterpriseLineLabel

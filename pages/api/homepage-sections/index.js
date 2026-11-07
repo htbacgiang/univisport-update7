@@ -5,7 +5,7 @@ import { requireAdmin } from "../../../lib/adminAuth";
 const DEFAULT_SECTIONS = [
   { title: "Đồng Phục Gym", category: "dong-phuc-gym", viewAllLink: "/dong-phuc-gym", order: 0, isVisible: true, productLimit: 12 },
   { title: "Đồng Phục Pickleball", category: "dong-phuc-pickleball", viewAllLink: "/dong-phuc-pickleball", order: 1, isVisible: true, productLimit: 12 },
-  { title: "Đồng Phục Yoga", category: "dong-phuc-yoga-pilates", viewAllLink: "/dong-phuc-yoga-pilates", order: 2, isVisible: true, productLimit: 12 },
+  { title: "Đồng Phục Yoga", category: "dong-phuc-yoga", viewAllLink: "/dong-phuc-yoga", order: 2, isVisible: true, productLimit: 12 },
   { title: "Đồng Phục Áo Gió", category: "dong-phuc-ao-gio", viewAllLink: "/dong-phuc-ao-gio", order: 3, isVisible: true, productLimit: 12 },
   { title: "Đồng Phục Golf - Tennis", category: "dong-phuc-golf-tennis", viewAllLink: "/dong-phuc-golf-tennis", order: 4, isVisible: true, productLimit: 12 },
   { title: "Đồng Phục Áo Polo", category: "dong-phuc-ao-polo", viewAllLink: "/dong-phuc-ao-polo", order: 5, isVisible: true, productLimit: 12 },

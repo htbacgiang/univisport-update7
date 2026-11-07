@@ -14,7 +14,7 @@ export default function InternalLinks({
   // Danh sách các danh mục chính
   const mainCategories = [
     { name: 'Đồng phục Gym', slug: '/dong-phuc-gym' },
-    { name: 'Đồng phục Yoga', slug: '/dong-phuc-yoga-pilates' },
+    { name: 'Đồng phục Yoga', slug: '/dong-phuc-yoga' },
     { name: 'Đồng phục Chạy bộ', slug: '/dong-phuc-chay-bo' },
     { name: 'Đồng phục Pickleball', slug: '/dong-phuc-pickleball' },
     { name: 'Đồng phục MMA', slug: '/dong-phuc-mma' },

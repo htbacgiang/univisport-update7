@@ -5,12 +5,13 @@ import Product from "../../../models/Product";
 import ProductDetailView from "../../../components/univisport/ProductDetailView";
 import { getProductLineLabel } from "../../../lib/productTaxonomy";
 import { ENTERPRISE_FLAT_SLUGS } from "../../../lib/enterpriseFlatSlugs";
+import { getCategoryPath, getCategoryDisplayName } from "../../../lib/siteCategories";
 import ProductDetailSkeleton from "../../../components/ui/product-detail-skeleton";
 
 // ─── CATEGORY NAMES MAP ──────────────────────────────────────────────────────
 const CATEGORY_NAMES = {
   'dong-phuc-gym': 'Đồng Phục Gym',
-  'dong-phuc-yoga-pilates': 'Đồng Phục Yoga',
+  'dong-phuc-yoga': 'Đồng Phục Yoga',
   'dong-phuc-pilates': 'Đồng Phục Pilates',
   'dong-phuc-pickleball': 'Đồng Phục Pickleball',
   'dong-phuc-ao-gio': 'Đồng Phục Áo Gió',
@@ -97,7 +98,7 @@ export async function getServerSideProps({ params }) {
       slug: p.slug || '',
     }));
 
-    const categoryNameVN = product.categoryNameVN || CATEGORY_NAMES[product.category] || 'Đồng Phục';
+    const categoryNameVN = getCategoryDisplayName(product.category, product.categoryNameVN) || CATEGORY_NAMES[product.category] || 'Đồng Phục';
     const canonicalUrl = `https://dongphucunivi.com/san-pham/${slug}`;
 
     // Đồng phục Doanh nghiệp có thêm 1 tầng category con (productLine) giữa category
@@ -110,7 +111,7 @@ export async function getServerSideProps({ params }) {
 
     const displayCategorySlug = isEnterpriseProduct
       ? (ENTERPRISE_FLAT_SLUGS[product.productLine] || `${product.category}/${product.productLine}`)
-      : product.category;
+      : getCategoryPath(product.category);
 
     const displayCategoryName = isEnterpriseProduct && enterpriseLineLabel
       ? enterpriseLineLabel

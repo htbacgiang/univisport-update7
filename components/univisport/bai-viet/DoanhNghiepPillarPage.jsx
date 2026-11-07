@@ -1101,7 +1101,7 @@ export default function DoanhNghiepPillarPage() {
             Với nhóm thể thao và fitness, các cụm chuyên sâu để tham khảo riêng:{" "}
             <InternalLink href="/dong-phuc-gym">đồng phục Gym</InternalLink>,{" "}
             <InternalLink href="/dong-phuc-pt">đồng phục PT</InternalLink> và{" "}
-            <InternalLink href="/dong-phuc-yoga-pilates">đồng phục Yoga - Pilates</InternalLink>.
+            <InternalLink href="/dong-phuc-yoga">đồng phục Yoga</InternalLink>.
           </div>
         </ArticleSection>
 

@@ -4,7 +4,7 @@ import FabricCatalogView from '../../components/univisport/chat-lieu-vai/FabricC
 import { FABRIC_MATERIALS, FABRIC_FAQS } from '../../data/fabricMaterials';
 
 const CANONICAL_URL = "https://dongphucunivi.com/chat-lieu-vai";
-const META_TITLE = "Chất Liệu Vải May Đồng Phục Thể Thao Cao Cấp | Univi";
+const META_TITLE = "Chất Liệu Vải May Đồng Phục Thể Thao Cao Cấp";
 const META_DESCRIPTION =
   "Tổng hợp các dòng chất liệu vải thể thao cao cấp Univi: Uni Air, Uni Supercool, Uni Cool Piqué, Uni Elite, Uni Quickdry. Định lượng chuẩn 150-180 GSM, co giãn 4 chiều, nhanh khô, kiểm định chất lượng.";
 

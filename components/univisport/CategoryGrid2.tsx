@@ -17,7 +17,7 @@ const categories: Category[] = [
   },
   {
     name: "Đồng phục Yoga",
-    slug: "/dong-phuc-yoga-pilates",
+    slug: "/dong-phuc-yoga",
     image: "/product/dong-phuc-yoga-pillates.jpg",
     count: 5,
   },

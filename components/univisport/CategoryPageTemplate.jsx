@@ -21,8 +21,8 @@ const GYM_CATEGORY_SLUG = 'dong-phuc-gym';
 
 const CATEGORY_H1 = {
   'dong-phuc-gym': 'Đồng Phục Gym Thiết Kế Theo Yêu Cầu Cho Phòng Tập Và Chuỗi Fitness Center',
-  'dong-phuc-yoga-pilates': 'Đồng Phục Yoga Thiết Kế Theo Yêu Cầu Cho Studio Và Cộng Đồng Wellness',
-  'dong-phuc-pilates': 'Đồng Phục Pilates & Áo Tập Pilates Cho Studio | Univi',
+  'dong-phuc-yoga': 'Đồng Phục Yoga, Áo Tập Yoga Và Đồ Tập Yoga Nữ',
+  'dong-phuc-pilates': 'Đồng Phục Pilates & Áo Tập Pilates Cho Studio',
   'dong-phuc-pickleball': 'Đồng Phục Pickleball Thiết Kế Theo Yêu Cầu Cho CLB, Học Viện Và Giải Đấu',
   'dong-phuc-chay-bo': 'Đồng Phục Chạy Bộ Thiết Kế Riêng Cho CLB Và Giải Chạy',
   'dong-phuc-mma': 'Đồng Phục MMA Thiết Kế Riêng Cho CLB Võ Thuật',
@@ -33,8 +33,8 @@ const CATEGORY_H1 = {
 const CATEGORY_DESCRIPTION = {
   'dong-phuc-gym':
     'Đồng phục Gym thiết kế theo yêu cầu cho phòng tập, PT Studio và chuỗi Fitness Center. Tư vấn chất liệu UNI DRY, phân vai đội ngũ, 2S Uniform, xưởng 2.000m2.',
-  'dong-phuc-yoga-pilates':
-    'Đồng Phục Univi tiên phong cung cấp giải pháp đồng phục Yoga theo yêu cầu cho Yoga Studio và Wellness Center trên toàn quốc. Hệ đồng phục được phát triển dựa trên đặc thù vận động, trải nghiệm người mặc và yêu cầu nhận diện thương hiệu của từng studio.',
+  'dong-phuc-yoga':
+    'Đồng Phục Univi may đồng phục Yoga, áo tập Yoga và đồ tập Yoga nữ theo yêu cầu cho Yoga Studio, HLV Yoga và Wellness Center trên toàn quốc. Các mẫu áo bra, croptop và quần legging cạp cao được phát triển theo đặc thù vận động Yoga, trải nghiệm người mặc và nhận diện thương hiệu của từng studio.',
   'dong-phuc-pilates':
     'Đồng phục Pilates và áo tập Pilates cho studio, HLV: các mẫu áo, chất liệu, form cho lớp Mat và Reformer, quy trình đặt may theo nhận diện studio tại Univi.',
 

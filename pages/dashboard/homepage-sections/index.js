@@ -29,7 +29,7 @@ const CATEGORY_SUGGESTION_GROUPS = [
     items: [
       { label: "Gym", title: "Đồng Phục Gym", category: "dong-phuc-gym", link: "/dong-phuc-gym" },
       { label: "Pickleball", title: "Đồng Phục Pickleball", category: "dong-phuc-pickleball", link: "/dong-phuc-pickleball" },
-      { label: "Yoga", title: "Đồng Phục Yoga", category: "dong-phuc-yoga-pilates", link: "/dong-phuc-yoga-pilates" },
+      { label: "Yoga", title: "Đồng Phục Yoga", category: "dong-phuc-yoga", link: "/dong-phuc-yoga" },
       { label: "Pilates", title: "Đồng Phục Pilates", category: "dong-phuc-pilates", link: "/dong-phuc-pilates" },
       { label: "Áo gió thể thao", title: "Đồng Phục Áo Gió", category: "dong-phuc-ao-gio", link: "/dong-phuc-ao-gio" },
       { label: "Golf - Tennis", title: "Đồng Phục Golf - Tennis", category: "dong-phuc-golf-tennis", link: "/dong-phuc-golf-tennis" },

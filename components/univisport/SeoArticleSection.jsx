@@ -489,7 +489,7 @@ const SeoArticleSection = () => {
               <div className="p-3 bg-white border">
                 <div>
                   <span className="font-semibold">Phạm vi ứng dụng:</span>
-                  <span className="ml-2">Dù là <Link href="/dong-phuc-gym" className="text-blue-600 hover:underline">Đồng phục Gym</Link>, <Link href="/dong-phuc-pickleball" className="text-blue-600 hover:underline">Pickleball</Link>, <Link href="/dong-phuc-yoga-pilates" className="text-blue-600 hover:underline">Yoga</Link>, <Link href="/dong-phuc-chay-bo" className="text-blue-600 hover:underline">Chạy bộ</Link>, <Link href="/dong-phuc-pickleball" className="text-blue-600 hover:underline">Pickleball</Link>, hay là
+                  <span className="ml-2">Dù là <Link href="/dong-phuc-gym" className="text-blue-600 hover:underline">Đồng phục Gym</Link>, <Link href="/dong-phuc-pickleball" className="text-blue-600 hover:underline">Pickleball</Link>, <Link href="/dong-phuc-yoga" className="text-blue-600 hover:underline">Yoga</Link>, <Link href="/dong-phuc-chay-bo" className="text-blue-600 hover:underline">Chạy bộ</Link>, <Link href="/dong-phuc-pickleball" className="text-blue-600 hover:underline">Pickleball</Link>, hay là
                     <Link href="/dong-phuc-team-building" className="text-blue-600 hover:underline">Đồng phục Team building</Link> Univi luôn sẵn sàng lắng nghe mong muốn của bạn.</span>
                 </div>
               </div>

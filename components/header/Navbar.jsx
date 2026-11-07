@@ -49,7 +49,7 @@ const sportMenuData = [
     ],
   },
   { name: "Đồng phục Pickleball", href: "/dong-phuc-pickleball" },
-  { name: "Đồng phục Yoga", href: "/dong-phuc-yoga-pilates" },
+  { name: "Đồng phục Yoga", href: "/dong-phuc-yoga" },
   { name: "Đồng phục Golf - Tennis", href: "/dong-phuc-golf-tennis" },
   { name: "Đồng phục Áo gió", href: "/dong-phuc-ao-gio" },
 ];
@@ -207,7 +207,7 @@ const SportUniformMenu = ({ isTransparent = false, activePath = "" }) => {
                     </Link>
                   </li>
                   <li>
-                    <Link href="/dong-phuc-yoga-pilates" className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap">
+                    <Link href="/dong-phuc-yoga" className="block hover:text-[#105d97] transition-colors py-0.5 whitespace-nowrap">
                       Đồng phục Yoga
                     </Link>
                   </li>

@@ -138,7 +138,8 @@ export async function getServerSideProps() {
   const targetCategorySlugs = [
     "dong-phuc-gym",
     "dong-phuc-pickleball",
-    "dong-phuc-yoga-pilates",
+    "dong-phuc-yoga",
+    "dong-phuc-pilates",
   ];
 
   const targetProducts = allProducts.filter((p: any) => {

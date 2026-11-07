@@ -1,56 +1,61 @@
+
 import { GetServerSideProps } from "next";
 
 const baseUrl = "https://dongphucunivi.com";
 
+// Danh sách URL danh mục đã đối chiếu với SEO Audit 07/11/2026
 const categories = [
-  { slug: "dong-phuc-the-thao" },
-  { slug: "dong-phuc-gym" },
-  { slug: "dong-phuc-yoga-pilates" },
-  { slug: "dong-phuc-pilates" },
-  { slug: "dong-phuc-pickleball" },
-  { slug: "dong-phuc-ao-gio" },
-  { slug: "dong-phuc-chay-bo" },
-  { slug: "dong-phuc-golf-tennis" },
-  { slug: "dong-phuc-mma" },
-  { slug: "dong-phuc-ao-thun" },
-  { slug: "dong-phuc-doanh-nghiep" },
-  { slug: "dong-phuc-polo" },
-  { slug: "dong-phuc-ao-thun-doanh-nghiep" },
-  { slug: "dong-phuc-so-mi" },
-  { slug: "dong-phuc-vest" },
-  { slug: "dong-phuc-ao-gio-doanh-nghiep" },
-  { slug: "dong-phuc-teambuilding" },
-  { slug: "dong-phuc-su-kien" },
-  { slug: "dong-phuc-bao-ho-lao-dong" },
-  { slug: "dong-phuc-phu-kien-qua-tang" },
-];
+  // Đồng phục thể thao
+  "dong-phuc-the-thao",
+  "dong-phuc-gym",
+  "dong-phuc-yoga",
+  "dong-phuc-pilates",
+  "dong-phuc-pickleball",
+  "dong-phuc-ao-gio",
+  "dong-phuc-chay-bo",
+  "dong-phuc-golf-tennis",
+  "dong-phuc-mma",
+
+  // Đồng phục doanh nghiệp
+  "dong-phuc-doanh-nghiep",
+  "polo-doanh-nghiep",
+  "dong-phuc-so-mi",
+  "dong-phuc-vest-cong-so",
+  "dong-phuc-teambuilding",
+  "bao-ho-lao-dong",
+  "phu-kien-qua-tang-doanh-nghiep",
+] as const;
 
 function generate() {
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  ${categories
+  const urls = categories
     .map(
-      (c) => `
+      (slug) => `
   <url>
-    <loc>${baseUrl}/${c.slug}</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
+    <loc>${baseUrl}/${slug}</loc>
   </url>`
     )
-    .join("")}
+    .join("");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
 </urlset>`;
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
-  res.setHeader("Content-Type", "text/xml");
+  res.setHeader("Content-Type", "application/xml; charset=utf-8");
+
   res.setHeader(
     "Cache-Control",
     "public, s-maxage=86400, stale-while-revalidate=3600"
   );
-  res.write(generate());
-  res.end();
 
-  return { props: {} };
+  res.statusCode = 200;
+  res.end(generate());
+
+  return {
+    props: {},
+  };
 };
 
 export default function SitemapCategories() {

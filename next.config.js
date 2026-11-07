@@ -12,6 +12,17 @@ const nextConfig = {
         destination: "/bo-suu-tap",
         permanent: true,
       },
+      // SEO migration 07/11/2026: pillar Yoga chuyển sang URL mới (301, không chain).
+      {
+        source: "/dong-phuc-yoga-pilates",
+        destination: "/dong-phuc-yoga",
+        statusCode: 301,
+      },
+      {
+        source: "/dong-phuc-yoga-pilates/:path*",
+        destination: "/dong-phuc-yoga/:path*",
+        statusCode: 301,
+      },
     ];
   },
 

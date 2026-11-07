@@ -759,7 +759,7 @@ export default function TheThaoPillarPage() {
                 Yoga và Pilates có nhiều động tác gập, xoắn, kéo giãn, đổi tư thế và giữ tư thế trong thời gian dài. Vì vậy, chất liệu mềm, mượt, co giãn và form phù hợp có vai trò quan trọng.
               </p>
               <p className="text-xs text-gray-500">
-                Tham khảo <InternalLink href="/dong-phuc-yoga-pilates">đồng phục Yoga - Pilates</InternalLink>.
+                Tham khảo <InternalLink href="/dong-phuc-yoga">đồng phục Yoga</InternalLink>.
               </p>
             </div>
 

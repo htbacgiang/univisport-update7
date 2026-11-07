@@ -51,7 +51,7 @@ Univi có chương trình hợp tác đại lý phân phối, công bố tại [
 ## 4. Solutions
 
 - [Đồng phục Gym](https://dongphucunivi.com/dong-phuc-gym) — May đồng phục Gym theo yêu cầu cho phòng tập, PT Studio và chuỗi Fitness Center; tư vấn chất liệu UNI DRY, thiết kế miễn phí, lưu chuẩn để tái sản xuất.
-- [Đồng phục Yoga & Pilates](https://dongphucunivi.com/dong-phuc-yoga-pilates) — Giải pháp đồng phục cho Yoga Studio, Pilates Studio và Wellness Center, phát triển theo đặc thù vận động và trải nghiệm người mặc.
+- [Đồng phục Yoga](https://dongphucunivi.com/dong-phuc-yoga) — Đồng phục Yoga, áo tập Yoga, áo bra, croptop và quần legging Yoga theo yêu cầu cho Yoga Studio, HLV Yoga và Wellness Center.
 - [Đồng phục Pickleball](https://dongphucunivi.com/dong-phuc-pickleball) — Đồng phục cho CLB, học viện, doanh nghiệp và giải đấu Pickleball, có thể đặt số lượng nhỏ theo dòng sản phẩm.
 - [Đồng phục chạy bộ](https://dongphucunivi.com/dong-phuc-chay-bo) — Đồng phục cho CLB, doanh nghiệp, đội nhóm và giải chạy, ưu tiên chất liệu nhẹ và thoát ẩm nhanh cho hoạt động ngoài trời.
 - [Đồng phục Golf & Tennis](https://dongphucunivi.com/dong-phuc-golf-tennis) — Đồng phục cho CLB, đội nhóm, học viện và sự kiện Golf, Tennis, ưu tiên form dáng lịch sự và giữ form tốt.
@@ -125,7 +125,7 @@ Ghi chú: website có nhiều bài viết khác ngoài danh sách trên (xem đ�
 - Homepage: https://dongphucunivi.com/
 - About: https://dongphucunivi.com/gioi-thieu
 - Capability profile: https://dongphucunivi.com/ho-so-nang-luc
-- Main Solutions: https://dongphucunivi.com/dong-phuc-gym, https://dongphucunivi.com/dong-phuc-yoga-pilates, https://dongphucunivi.com/dong-phuc-pickleball, https://dongphucunivi.com/dong-phuc-chay-bo, https://dongphucunivi.com/dong-phuc-golf-tennis, https://dongphucunivi.com/dong-phuc-mma, https://dongphucunivi.com/giai-phap-2s
+- Main Solutions: https://dongphucunivi.com/dong-phuc-gym, https://dongphucunivi.com/dong-phuc-yoga, https://dongphucunivi.com/dong-phuc-pickleball, https://dongphucunivi.com/dong-phuc-chay-bo, https://dongphucunivi.com/dong-phuc-golf-tennis, https://dongphucunivi.com/dong-phuc-mma, https://dongphucunivi.com/giai-phap-2s
 - Main Product Categories: https://dongphucunivi.com/san-pham, https://dongphucunivi.com/dong-phuc-ao-gio, https://dongphucunivi.com/dong-phuc-ao-thun
 - Technology: https://dongphucunivi.com/cong-nghe-uni-dry, https://dongphucunivi.com/vai-super-cool-la-gi
 - Manufacturing: https://dongphucunivi.com/xuong-may-dong-phuc-univi

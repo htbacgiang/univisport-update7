@@ -5,7 +5,7 @@ import { getCategoryArticleSetting } from '../../lib/categoryArticleSettings';
 
 const SLUG = 'dong-phuc-gym';
 const SITE = 'https://dongphucunivi.com';
-const META_TITLE = 'Đồng Phục Gym & Áo Tập Gym Cho Phòng Tập | Univi';
+const META_TITLE = 'Đồng Phục Gym & Áo Tập Gym Cho Phòng Tập ';
 const META_DESCRIPTION =
   'Đồng phục Gym, áo tập Gym cho phòng tập, HLV và PT. Khám phá 24 mẫu áo Univi, 5 dòng vải thể thao và giải pháp thiết kế theo nhận diện thương hiệu.';
 const PAGE_NAME = 'Đồng phục Gym – Áo tập Gym cho phòng tập và đội ngũ Fitness';

@@ -30,7 +30,7 @@ export default function Footer() {
       { name: "Đồng phục Gym", href: "/dong-phuc-gym" },
       { name: "Đồng phục Pickleball", href: "/dong-phuc-pickleball" },
       { name: "Đồng phục Golf - Tennis", href: "/dong-phuc-golf-tennis" },
-      { name: "Đồng phục Yoga", href: "/dong-phuc-yoga-pilates" },
+      { name: "Đồng phục Yoga", href: "/dong-phuc-yoga" },
       { name: "Đồng phục Pilates", href: "/dong-phuc-pilates" },
       { name: "Đồng phục áo gió", href: "/dong-phuc-ao-gio" },
     ],

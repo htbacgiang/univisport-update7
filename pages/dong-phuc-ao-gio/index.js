@@ -4,7 +4,7 @@ import { getProductsByCategory, getSidebarNavCounts } from '../../lib/getProduct
 import { getCategoryArticleSetting } from '../../lib/categoryArticleSettings';
 
 const SLUG = 'dong-phuc-ao-gio';
-const META_TITLE = 'May Đồng Phục Áo Gió Thể Thao Theo Yêu Cầu | Univi';
+const META_TITLE = 'May Đồng Phục Áo Gió Thể Thao Theo Yêu Cầu';
 const META_DESCRIPTION =
   'May đồng phục áo gió thể thao theo yêu cầu cho doanh nghiệp, phòng tập và CLB. Tư vấn áo 1 lớp, 2 lớp, siêu nhẹ; thiết kế miễn phí, lưu chuẩn tái sản xuất toàn quốc.';
 

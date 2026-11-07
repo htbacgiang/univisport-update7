@@ -2,7 +2,7 @@ import DefaultLayout2 from '../../components/layout/DefaultLayout2';
 import TheThaoPillarPage, { theThaoFaqs } from '../../components/univisport/bai-viet/TheThaoPillarPage';
 
 const SLUG = 'dong-phuc-the-thao';
-const META_TITLE = 'Đồng Phục Thể Thao Chuyên Dụng Theo Bộ Môn | Univi';
+const META_TITLE = 'Đồng Phục Thể Thao Chuyên Dụng Theo Bộ Môn ';
 const META_DESCRIPTION =
   'Tìm hiểu cách chọn đồng phục thể thao chuyên dụng cho Gym, Yoga, Pickleball, Running, MMA, Golf, Tennis và đội nhóm. Khám phá vật liệu, thiết kế, quy trình và năng lực Đồng Phục Univi.';
 const META_KEYWORDS =

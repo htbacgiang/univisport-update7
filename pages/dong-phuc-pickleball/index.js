@@ -4,7 +4,7 @@ import { getProductsByCategory, getSidebarNavCounts } from '../../lib/getProduct
 import { getCategoryArticleSetting } from '../../lib/categoryArticleSettings';
 
 const SLUG = 'dong-phuc-pickleball';
-const META_TITLE = 'Đồng Phục Pickleball Theo Yêu Cầu Cho CLB | Univi Sport';
+const META_TITLE = 'Đồng Phục Pickleball Theo Yêu Cầu Cho CLB  Sport';
 const META_DESCRIPTION =
   'Đồng phục Pickleball thiết kế theo yêu cầu cho CLB, học viện, doanh nghiệp và giải đấu. Vải thể thao UNI DRY, xưởng 2.000m², đặt từ 10 áo, tư vấn thiết kế miễn phí.';
 

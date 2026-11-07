@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import ContactForm from "../header/ContactForm";
 
-const PROCESS_STEPS = [
+export const PROCESS_STEPS = [
   {
     step: "01",
     title: "Tư vấn nhu cầu",
@@ -54,7 +54,9 @@ const PROCESS_STEPS = [
   },
 ];
 
-export default function ProcessSteps({ variant = "default" }) {
+// steps: tùy chọn, cho phép trang bộ môn thay nội dung từng bước (vd. Yoga không có máy Reformer).
+// Không truyền → giữ nguyên 8 bước mặc định, giao diện không đổi.
+export default function ProcessSteps({ variant = "default", steps = PROCESS_STEPS }) {
   const [contactOpen, setContactOpen] = useState(false);
   const modalRef = useRef(null);
 
@@ -77,7 +79,7 @@ export default function ProcessSteps({ variant = "default" }) {
   if (variant === "vertical") {
     return (
       <div className="space-y-3">
-        {PROCESS_STEPS.map((s, i) => (
+        {steps.map((s, i) => (
           <div key={s.step} className="flex gap-4 border-l-4 border-[#105d97]/20 py-2 pl-4">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#105d97] text-sm font-bold text-white">
               {String(i + 1).padStart(2, "0")}
@@ -104,7 +106,7 @@ export default function ProcessSteps({ variant = "default" }) {
         <div className="text-center mb-16">
           <h2 className="text-2xl md:text-4xl uppercase font-bold text-gray-900 mb-1 max-w-6xl mx-auto leading-6">
             Từ yêu cầu đến sản phẩm{" "}
-            <span className="text-[#105d97]">{PROCESS_STEPS.length} bước chuẩn hóa</span>
+            <span className="text-[#105d97]">{steps.length} bước chuẩn hóa</span>
           </h2>
           <p className="text-gray-500 max-w-4xl mx-auto text-base leading-6">
             Quy trình được thiết kế để tiết kiệm tối đa thời gian của doanh nghiệp — rõ ràng, không phát sinh, đúng tiến độ.
@@ -113,7 +115,7 @@ export default function ProcessSteps({ variant = "default" }) {
 
         {/* Step cards grid — 4 columns on desktop, 2 on tablet, 1 on mobile */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-7xl mx-auto">
-          {PROCESS_STEPS.map((s, i) => (
+          {steps.map((s, i) => (
             <div
               key={i}
               className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between gap-3 hover:shadow-md transition-all duration-300 border-l-4 border-l-[#105d97]"

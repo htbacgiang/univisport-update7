@@ -12,7 +12,7 @@ import { getProductLineOptions, getCollarTypeOptions, getProductLineLabel, getCo
 
 const CATEGORY_TAB_DEFINITIONS = [
   { key: 'dong-phuc-gym', label: 'Đồng phục Gym', matchFn: (p) => p.category === 'dong-phuc-gym' },
-  { key: 'dong-phuc-yoga-pilates', label: 'Đồng phục Yoga', matchFn: (p) => p.category === 'dong-phuc-yoga-pilates' },
+  { key: 'dong-phuc-yoga', label: 'Đồng phục Yoga', matchFn: (p) => p.category === 'dong-phuc-yoga' },
   { key: 'dong-phuc-pilates', label: 'Đồng phục Pilates', matchFn: (p) => p.category === 'dong-phuc-pilates' },
   { key: 'dong-phuc-pickleball', label: 'Đồng phục Pickleball', matchFn: (p) => p.category === 'dong-phuc-pickleball' },
   { key: 'dong-phuc-chay-bo', label: 'Đồng phục Chạy bộ', matchFn: (p) => p.category === 'dong-phuc-chay-bo' },

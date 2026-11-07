@@ -293,13 +293,7 @@ export default function PickleballUniviPage() {
           </Link>
 
         </div>
-        <div className="mt-5 flex flex-wrap gap-2">
-          {heroStats.map((stat) => (
-            <span key={stat} className="rounded border border-gray-200 px-3 py-1 text-sm text-gray-700">
-              {stat}
-            </span>
-          ))}
-        </div>
+
       </section>
 
       <Section id="dong-phuc-pickleball-khong-chi-la-ao" title="1. Đồng Phục Pickleball Không Chỉ Là Một Chiếc Áo" className="border-t border-gray-100">

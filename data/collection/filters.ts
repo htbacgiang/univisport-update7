@@ -10,7 +10,7 @@ export const collectionFilters: CollectionFilter[] = [
   { id: "all", label: "Tất cả" },
   { id: "gym", label: "Gym", href: "/dong-phuc-gym" },
   { id: "pickleball", label: "Pickleball", href: "/dong-phuc-pickleball" },
-  { id: "yoga-pilates", label: "Yoga & Pilates", href: "/dong-phuc-yoga-pilates" },
+  { id: "yoga-pilates", label: "Yoga & Pilates", href: "/dong-phuc-yoga" },
   { id: "chay-bo", label: "Chạy bộ", href: "/dong-phuc-chay-bo" },
   { id: "mma", label: "MMA", href: "/dong-phuc-mma" },
   { id: "golf-tennis", label: "Golf & Tennis", href: "/dong-phuc-golf-tennis" },

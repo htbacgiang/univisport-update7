@@ -4,7 +4,7 @@ import { getProductsByCategory, getSidebarNavCounts } from '../../lib/getProduct
 import { getCategoryArticleSetting } from '../../lib/categoryArticleSettings';
 
 const SLUG = 'dong-phuc-pilates';
-const META_TITLE = 'Đồng Phục Pilates & Áo Tập Pilates Cho Studio | Univi';
+const META_TITLE = 'Đồng Phục Pilates & Áo Tập Pilates Cho Studio ';
 const META_DESCRIPTION =
   'Đồng phục Pilates, áo tập Pilates cho studio và HLV: mẫu áo, chất liệu, form cho Mat và Reformer, thiết kế và sản xuất theo nhận diện thương hiệu tại Univi.';
 const META_KEYWORDS =
@@ -59,16 +59,20 @@ function buildArticleSchema() {
     },
     'author': {
       '@type': 'Organization',
+      '@id': 'https://dongphucunivi.com/#organization',
       'name': 'Đồng Phục Univi',
       'url': 'https://dongphucunivi.com',
     },
     'publisher': {
       '@type': 'Organization',
+      '@id': 'https://dongphucunivi.com/#organization',
       'name': 'Đồng Phục Univi',
       'url': 'https://dongphucunivi.com',
       'logo': {
         '@type': 'ImageObject',
-        'url': 'https://dongphucunivi.com/logo-univi.webp',
+        'url': 'https://dongphucunivi.com/images/logo-univi-2.png',
+        'width': 512,
+        'height': 512,
       },
     },
     'inLanguage': 'vi-VN',

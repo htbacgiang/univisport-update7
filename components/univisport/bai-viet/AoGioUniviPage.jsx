@@ -137,13 +137,7 @@ export default function AoGioUniviPage() {
             Xem các dòng áo gió
           </Link>
         </div>
-        <div className="mt-5 flex flex-wrap gap-2">
-          {heroStats.map((stat) => (
-            <span key={stat} className="rounded border border-gray-200 px-3 py-1 text-sm text-gray-700">
-              {stat}
-            </span>
-          ))}
-        </div>
+
       </section>
 
       <Section id="trust-badge" title="Năng lực sản xuất Univi" className="border-t border-gray-100">
@@ -243,7 +237,7 @@ export default function AoGioUniviPage() {
               Giáo viên Yoga hoặc Pilates thường cần một lớp khoác nhẹ trước và sau buổi tập, đặc biệt khi di chuyển từ môi trường nóng sang phòng điều hòa. Áo nên mềm, nhẹ, dễ tháo mặc và không có chi tiết cứng gây cấn khi mang theo.
             </p>
             <p className="mt-2">
-              Studio có thể phối đồng phục áo gió với <Link href="/dong-phuc-yoga-pilates" className="text-[#105d97] font-semibold hover:underline">đồng phục Yoga–Pilates</Link> theo cùng bảng màu. Cấu trúc siêu nhẹ phù hợp workshop, retreat hoặc lớp ngoài trời; cấu trúc hai lớp phù hợp di chuyển sáng sớm và thời tiết lạnh hơn.
+              Studio có thể phối đồng phục áo gió với <Link href="/dong-phuc-yoga" className="text-[#105d97] font-semibold hover:underline">đồng phục Yoga</Link> theo cùng bảng màu. Cấu trúc siêu nhẹ phù hợp workshop, retreat hoặc lớp ngoài trời; cấu trúc hai lớp phù hợp di chuyển sáng sớm và thời tiết lạnh hơn.
             </p>
           </TextCard>
 

@@ -51,7 +51,7 @@ const menuItems = [
         ],
       },
       { name: "Đồng phục Pickleball", link: "/dong-phuc-pickleball" },
-      { name: "Đồng phục Yoga", link: "/dong-phuc-yoga-pilates" },
+      { name: "Đồng phục Yoga", link: "/dong-phuc-yoga" },
       { name: "Đồng phục Pilates", link: "/dong-phuc-pilates" },
       { name: "Đồng phục Golf - Tennis", link: "/dong-phuc-golf-tennis" },
       { name: "Đồng phục Áo gió", link: "/dong-phuc-ao-gio" },

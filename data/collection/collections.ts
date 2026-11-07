@@ -46,7 +46,7 @@ export const collectionEntries: CollectionEntry[] = [
     image: "https://live.staticflickr.com/65535/55234415043_453cb017c2_b.jpg",
     imageAlt: "Đồng phục Yoga & Pilates Univi",
     ctaLabel: "Khám phá bộ sưu tập →",
-    ctaHref: "/dong-phuc-yoga-pilates",
+    ctaHref: "/dong-phuc-yoga",
     variant: "full-bleed",
   },
   {

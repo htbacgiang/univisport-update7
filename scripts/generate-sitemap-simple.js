@@ -30,7 +30,7 @@ async function generateSitemap() {
       { url: '/dong-phuc-mma', priority: '0.8', changefreq: 'weekly' },
       { url: '/dong-phuc-pickleball', priority: '0.8', changefreq: 'weekly' },
       { url: '/dong-phuc-team-building', priority: '0.8', changefreq: 'weekly' },
-      { url: '/dong-phuc-yoga-pilates', priority: '0.8', changefreq: 'weekly' },
+      { url: '/dong-phuc-yoga', priority: '0.8', changefreq: 'weekly' },
     ];
 
     // Tạo XML sitemap

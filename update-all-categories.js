@@ -6,7 +6,8 @@ const fs = require('fs');
 const path = require('path');
 
 const categories = [
-  'dong-phuc-yoga-pilates',
+  'dong-phuc-yoga',
+  'dong-phuc-pilates',
   'dong-phuc-pickleball',
   'dong-phuc-chay-bo',
   'dong-phuc-mma',
