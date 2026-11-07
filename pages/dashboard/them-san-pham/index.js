@@ -450,6 +450,7 @@ export default function CreateJSONProductPage() {
 
       const { data } = await axios.post('/api/ai/generate', {
         type: 'product_description',
+        maSanPham: formData.maSanPham,
         productName: formData.name,
         category: formData.categoryNameVN || formData.category,
         material: formData.material,
@@ -487,6 +488,7 @@ export default function CreateJSONProductPage() {
       const { data } = await axios.post('/api/ai/generate', {
         type: 'product_seo_content',
         content: currentContent,
+        maSanPham: formData.maSanPham,
         productName: formData.name,
         category: formData.categoryNameVN || formData.category,
         material: formData.material,
@@ -588,6 +590,7 @@ export default function CreateJSONProductPage() {
 
       const { data } = await axios.post('/api/ai/generate', {
         type: 'product_faqs',
+        maSanPham: formData.maSanPham,
         productName: formData.name,
         category: formData.categoryNameVN || formData.category,
         material: formData.material,

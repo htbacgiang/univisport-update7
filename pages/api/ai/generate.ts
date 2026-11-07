@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { requireAdmin } from "../../../lib/adminAuth";
 import { getFallbackColorName } from "../../../lib/colorNamer";
+import { buildKnowledgePromptContext } from "../../../lib/knowledgeBase";
 
 function stripHtml(html: string): string {
   if (!html) return "";
@@ -80,6 +81,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     description,
     focusKeyword,
     productName,
+    maSanPham,
     category,
     material,
     productLine,
@@ -119,18 +121,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
       }
 
-      const prompt = `Bạn là chuyên gia SEO bài viết tiếng Việt cho thương hiệu may đồng phục Univi.
-Hãy viết 1 đoạn Meta Description ngắn gọn, thu hút, chuẩn SEO (chiều dài tối ưu từ 150 đến 175 ký tự, tuyệt đối không quá 190 ký tự) dựa vào tiêu đề và nội dung bài viết dưới đây.
+      const knowledgeContext = buildKnowledgePromptContext({
+        category,
+        productName: cleanTitle,
+        type: "description",
+      });
 
-Yêu cầu:
-1. Tóm tắt nội dung cốt lõi và nêu bật điểm hấp dẫn nhất để người tìm kiếm Google muốn nhấp vào xem ngay lập tức.
-2. ${focusKeyword ? `Chứa từ khóa chính "${focusKeyword}" một cách khéo léo, tự nhiên.` : "Chứa các cụm từ khóa tự nhiên liên quan đến bài viết."}
-3. Câu văn mạch lạc, hấp dẫn, chuẩn tiếng Việt, không dùng đại từ rườm rà.
-4. Tuyệt đối KHÔNG đặt trong dấu ngoặc kép, KHÔNG dùng hashtag, KHÔNG chứa markdown hay icon.
-5. Chỉ trả về DUY NHẤT một đoạn văn bản mô tả ngắn, không thêm bất kỳ lời dẫn hay giải thích nào khác.
+      const prompt = `Bạn là chuyên gia SEO bài viết tiếng Việt cho thương hiệu may đồng phục Univi (dongphucunivi.com).
+Dưới đây là BỘ TRI THỨC CHUẨN (Source of Truth) của Univi từ /docs/knowledge. Bạn BẮT BUỘC phải đọc và áp dụng chính xác các quy chuẩn, chất liệu và văn phong này:
+${knowledgeContext}
 
 Tiêu đề bài viết: ${cleanTitle || "Chưa có tiêu đề"}
-Nội dung bài viết: ${cleanContent.slice(0, 3500)}`;
+${focusKeyword ? `Từ khóa chính (Focus Keyword): ${focusKeyword}` : ""}
+Nội dung bài viết: ${cleanContent.slice(0, 3500)}
+
+Yêu cầu tạo Meta Description:
+1. Viết 1 đoạn Meta Description ngắn gọn, thu hút, chuẩn SEO (chiều dài tối ưu từ 150 đến 175 ký tự, tuyệt đối không quá 190 ký tự) dựa vào tiêu đề, nội dung bài viết và Bộ tri thức Univi.
+2. Tóm tắt nội dung cốt lõi và nêu bật điểm hấp dẫn nhất để người tìm kiếm Google muốn nhấp vào xem ngay lập tức.
+3. ${focusKeyword ? `Chứa từ khóa chính "${focusKeyword}" một cách khéo léo, tự nhiên.` : "Chứa các cụm từ khóa tự nhiên liên quan đến bài viết."}
+4. TUYỆT ĐỐI TUÂN THỦ TỪ CẤM từ Knowledge: KHÔNG dùng "số 1", "hàng đầu", "dẫn đầu", "giá rẻ nhất", "mua ngay/chốt đơn"...
+5. TUYỆT ĐỐI KHÔNG nhắc đến "QCVN 01:2017/BCT" hay từ viết tắt QCVN.
+6. Câu văn mạch lạc, hấp dẫn, chuẩn tiếng Việt, không dùng đại từ rườm rà.
+7. Tuyệt đối KHÔNG đặt trong dấu ngoặc kép, KHÔNG dùng hashtag, KHÔNG chứa markdown hay icon.
+8. Chỉ trả về DUY NHẤT một đoạn văn bản mô tả ngắn, không thêm bất kỳ lời dẫn hay giải thích nào khác.`;
 
       const rawDesc = await callGemini(prompt, apiKey);
       let description = rawDesc.trim().replace(/^["']|["']$/g, "").trim();
@@ -171,11 +184,21 @@ Nội dung bài viết: ${cleanContent.slice(0, 3500)}`;
 
       const isProduct = type === "product_faqs" || !!productName;
 
-      const prompt = isProduct
-        ? `Bạn là chuyên gia tư vấn may đồng phục và chăm sóc khách hàng của thương hiệu may mặc Univi (dongphucunivi.com).
-Hãy dựa vào các thông tin sản phẩm dưới đây để tạo từ 3 đến 5 câu hỏi thường gặp (FAQ) kèm câu trả lời chuẩn xác, chuyên nghiệp để khách hàng yên tâm đặt may hoặc mua sản phẩm.
+      let prompt = "";
+      if (isProduct) {
+        const knowledgeContext = buildKnowledgePromptContext({
+          category,
+          maSanPham,
+          productName: name,
+          type: "product_faqs",
+        });
 
-Thông tin sản phẩm:
+        prompt = `Bạn là chuyên gia tư vấn may đồng phục và chăm sóc khách hàng của thương hiệu may mặc Univi (dongphucunivi.com).
+Dưới đây là BỘ TRI THỨC CHUẨN (Source of Truth) của Univi từ /docs/knowledge. Bạn BẮT BUỘC phải đọc kỹ và dựa vào các sự thật/chính sách thực tế này để tạo câu hỏi và trả lời chính xác:
+${knowledgeContext}
+
+Thông tin sản phẩm đang xét:
+- Mã sản phẩm: ${maSanPham || "Chưa có mã"}
 - Tên sản phẩm: ${name}
 ${category ? `- Danh mục: ${category}` : ""}
 ${material ? `- Chất liệu vải: ${material}` : ""}
@@ -186,32 +209,52 @@ ${colorNames ? `- Màu sắc: ${colorNames}` : ""}
 ${cleanDesc ? `- Mô tả ngắn: ${cleanDesc}` : ""}
 ${cleanContent ? `- Tóm tắt chi tiết: ${cleanContent.slice(0, 1500)}` : ""}
 
-Yêu cầu:
-1. Câu hỏi là những thắc mắc thực tế, quan trọng nhất của khách hàng khi đặt may hoặc mua sản phẩm này (số lượng đặt tối thiểu, thời gian may và giao hàng, chất liệu vải có thoáng mát/co giãn/bền màu không, in thêu logo theo yêu cầu, chính sách bảo hành & bảng size).
-2. Câu trả lời ngắn gọn (khoảng 2-3 câu), văn phong chuyên nghiệp, tin cậy, thể hiện uy tín của Univi.
-3. BẮT BUỘC trả về duy nhất định dạng JSON array hợp lệ, KHÔNG bọc trong markdown block (\`\`\`json), KHÔNG kèm bất kỳ text lời dẫn nào khác.
+Yêu cầu tạo FAQ:
+1. Tạo từ 3 đến 5 câu hỏi thường gặp (FAQ) kèm câu trả lời chuẩn xác, chuyên nghiệp nhất theo đúng bộ Knowledge:
+   - Số lượng đặt may tối thiểu (MOQ): nhận từ 10 sản phẩm (với mẫu/vải có sẵn).
+   - Miễn phí thiết kế mockup 3D theo nhận diện thương hiệu.
+   - Chất liệu vải: vải chuyên dụng với công nghệ thoát ẩm UNI DRY, xử lý an toàn lành tính cho da.
+   - Công nghệ in logo: In PET (DTF), decal PU, thêu vi tính; độ bền cao.
+   - Chính sách tái đặt đồng bộ: Lưu thông số rập và màu khi phòng tập/doanh nghiệp mở thêm chi nhánh.
+   - Hướng dẫn bảo quản chuẩn của Univi: lộn trái khi giặt, giặt tay/nhẹ, tránh nước nóng >40°C, phơi râm mát.
+2. TUYỆT ĐỐI TUÂN THỦ TỪ CẤM từ Knowledge: KHÔNG dùng "số 1", "hàng đầu", "giá rẻ nhất", "mua ngay/chốt đơn"...
+3. TUYỆT ĐỐI KHÔNG nhắc đến "QCVN 01:2017/BCT" hay từ viết tắt QCVN.
+4. Câu trả lời ngắn gọn (2-3 câu), văn phong chuyên nghiệp, nâng cao uy tín Univi.
+5. BẮT BUỘC trả về duy nhất định dạng JSON array hợp lệ, KHÔNG bọc trong markdown block, KHÔNG kèm bất kỳ text lời dẫn nào khác.
 
 Cấu trúc JSON:
 [
   {"question": "Câu hỏi 1?", "answer": "Câu trả lời 1..."},
   {"question": "Câu hỏi 2?", "answer": "Câu trả lời 2..."}
-]`
-        : `Bạn là chuyên gia nội dung và chăm sóc khách hàng cho thương hiệu may đồng phục Univi.
-Hãy dựa vào tiêu đề và nội dung bài viết dưới đây để tạo từ 3 đến 5 câu hỏi thường gặp (FAQ) kèm câu trả lời hữu ích, chuẩn xác để tích hợp FAQ Schema vào bài viết.
+]`;
+      } else {
+        const knowledgeContext = buildKnowledgePromptContext({
+          category,
+          productName: name,
+          type: "faqs",
+        });
 
-Yêu cầu:
-1. Câu hỏi là những thắc mắc thực tế, quan trọng nhất mà người đọc/khách hàng muốn biết liên quan trực tiếp đến bài viết.
-2. Câu trả lời ngắn gọn, súc tích (khoảng 2-3 câu), văn phong chuyên nghiệp, dễ hiểu, uy tín.
-3. BẮT BUỘC trả về duy nhất định dạng JSON array hợp lệ, KHÔNG bọc trong markdown block (như \`\`\`json), KHÔNG kèm bất kỳ text lời dẫn nào khác.
-
-Cấu trúc JSON:
-[
-  {"question": "Câu hỏi 1?", "answer": "Câu trả lời 1..."},
-  {"question": "Câu hỏi 2?", "answer": "Câu trả lời 2..."}
-]
+        prompt = `Bạn là chuyên gia nội dung và chăm sóc khách hàng cho thương hiệu may đồng phục Univi (dongphucunivi.com).
+Dưới đây là BỘ TRI THỨC CHUẨN (Source of Truth) của Univi từ /docs/knowledge (gồm chính sách MOQ từ 10 áo, tiến độ, in ấn, chất liệu và FAQ chuẩn):
+${knowledgeContext}
 
 Tiêu đề bài viết: ${name || "Chưa có tiêu đề"}
-Nội dung bài viết: ${cleanContent.slice(0, 3500)}`;
+Nội dung bài viết: ${cleanContent.slice(0, 3500)}
+
+Yêu cầu tạo FAQ Schema cho bài viết:
+1. Dựa vào nội dung bài viết và Bộ tri thức chuẩn Univi, hãy tạo từ 3 đến 5 câu hỏi thường gặp (FAQ) kèm câu trả lời hữu ích, chuẩn xác, chuyên nghiệp.
+2. Câu hỏi là những thắc mắc thực tế, quan trọng nhất của người đọc/khách hàng liên quan trực tiếp đến chủ đề bài viết.
+3. Câu trả lời ngắn gọn, súc tích (khoảng 2-3 câu), văn phong chuyên nghiệp, uy tín, đảm bảo tính xác thực theo Knowledge Univi (nhận đặt từ 10 áo với mẫu có sẵn, miễn phí thiết kế mockup, công nghệ UNI DRY, lưu rập/màu để tái đặt...).
+4. TUYỆT ĐỐI TUÂN THỦ TỪ CẤM từ Knowledge: KHÔNG dùng "số 1", "hàng đầu", "giá rẻ nhất", "mua ngay/chốt đơn"...
+5. TUYỆT ĐỐI KHÔNG nhắc đến "QCVN 01:2017/BCT" hay từ viết tắt QCVN.
+6. BẮT BUỘC trả về duy nhất định dạng JSON array hợp lệ, KHÔNG bọc trong markdown block, KHÔNG kèm bất kỳ text lời dẫn nào khác.
+
+Cấu trúc JSON:
+[
+  {"question": "Câu hỏi 1?", "answer": "Câu trả lời 1..."},
+  {"question": "Câu hỏi 2?", "answer": "Câu trả lời 2..."}
+]`;
+      }
 
       const rawFaqs = await callGemini(prompt, apiKey);
       let cleanJson = rawFaqs.replace(/```(?:json)?/gi, "").replace(/```/g, "").trim();
@@ -238,7 +281,7 @@ Nội dung bài viết: ${cleanContent.slice(0, 3500)}`;
     }
 
     // ----------------------------------------------------
-    // 3. TẠO MÔ TẢ SẢN PHẨM (PRODUCT SHORT DESCRIPTION) DỰA VÀO DỮ LIỆU ĐANG CÓ
+    // 3. TẠO MÔ TẢ SẢN PHẨM (PRODUCT SHORT DESCRIPTION) DỰA VÀO DỮ LIỆU ĐANG CÓ & KNOWLEDGE BASE
     // ----------------------------------------------------
     if (type === "product_description") {
       const name = (productName || title || "").trim();
@@ -257,10 +300,19 @@ Nội dung bài viết: ${cleanContent.slice(0, 3500)}`;
 
       const cleanContent = stripHtml(content || "");
 
+      const knowledgeContext = buildKnowledgePromptContext({
+        category,
+        maSanPham,
+        productName: name,
+        type: "product_description",
+      });
+
       const prompt = `Bạn là chuyên gia sáng tạo nội dung và SEO cho thương hiệu thời trang & may đồng phục cao cấp Univi (dongphucunivi.com).
-Hãy viết một đoạn Mô tả ngắn sản phẩm (Product Short Description) súc tích, hấp dẫn, chuẩn SEO (chiều dài tối ưu từ 160 đến 250 ký tự, tuyệt đối không quá 290 ký tự) dựa trên các thông số sản phẩm dưới đây:
+Dưới đây là BỘ TRI THỨC CHUẨN (Source of Truth) của Univi từ /docs/knowledge. Bạn BẮT BUỘC phải đọc và áp dụng chính xác các quy chuẩn, chất liệu và văn phong này:
+${knowledgeContext}
 
 Thông số sản phẩm:
+- Mã sản phẩm: ${maSanPham || "Chưa có mã"}
 - Tên sản phẩm: ${name}
 ${category ? `- Danh mục: ${category}` : ""}
 ${productLine ? `- Dòng sản phẩm: ${productLine}` : ""}
@@ -271,11 +323,13 @@ ${colorNames ? `- Màu sắc: ${colorNames}` : ""}
 ${cleanContent ? `- Tóm tắt nội dung chi tiết: ${cleanContent.slice(0, 400)}` : ""}
 
 Yêu cầu:
-1. Nêu bật ưu điểm: phom dáng hiện đại, chất liệu bền đẹp, thoáng khí, thấm hút mồ hôi, co giãn thoải mái, thích hợp làm đồng phục doanh nghiệp, teambuilding hoặc thể thao vận động.
-2. Câu văn cuốn hút, tự nhiên, văn phong chuẩn tiếng Việt, kích thích khách hàng liên hệ đặt may.
-3. Chứa tên sản phẩm hoặc từ khóa chính một cách tự nhiên.
-4. Tuyệt đối KHÔNG đặt trong dấu ngoặc kép, KHÔNG dùng hashtag, KHÔNG markdown.
-5. Chỉ trả về DUY NHẤT một đoạn văn bản mô tả, không thêm bất kỳ lời dẫn hay giải thích nào khác.`;
+1. Viết một đoạn Mô tả ngắn sản phẩm (Product Short Description) súc tích, hấp dẫn, chuẩn SEO (chiều dài tối ưu từ 160 đến 250 ký tự, tuyệt đối không quá 290 ký tự).
+2. Nêu bật ưu điểm theo đúng chuẩn Univi: phom dáng hiện đại, chất liệu bền đẹp, công nghệ thoát ẩm UNI DRY, thoáng khí, co giãn thoải mái, thích hợp làm đồng phục doanh nghiệp, teambuilding hoặc thể thao vận động.
+3. TUYỆT ĐỐI TUÂN THỦ TỪ CẤM từ Knowledge: KHÔNG dùng "số 1", "dẫn đầu", "hàng đầu", "giá rẻ nhất", "mua ngay/chốt đơn"...
+4. TUYỆT ĐỐI KHÔNG nhắc đến "QCVN 01:2017/BCT" hay từ viết tắt QCVN.
+5. Chứa tên sản phẩm hoặc từ khóa chính một cách tự nhiên.
+6. Tuyệt đối KHÔNG đặt trong dấu ngoặc kép, KHÔNG dùng hashtag, KHÔNG markdown.
+7. Chỉ trả về DUY NHẤT một đoạn văn bản mô tả, không thêm bất kỳ lời dẫn hay giải thích nào khác.`;
 
       const rawDesc = await callGemini(prompt, apiKey);
       let description = rawDesc.trim().replace(/^["']|["']$/g, "").trim();
@@ -294,7 +348,7 @@ Yêu cầu:
     }
 
     // ----------------------------------------------------
-    // 4. CHỈNH SỬA & TỐI ƯU NỘI DUNG CHI TIẾT SẢN PHẨM CHUẨN SEO
+    // 4. CHỈNH SỬA & TỐI ƯU NỘI DUNG CHI TIẾT SẢN PHẨM CHUẨN SEO DỰA THEO KNOWLEDGE BASE
     // ----------------------------------------------------
     if (type === "product_seo_content") {
       const rawContent = (content || "").trim();
@@ -306,10 +360,19 @@ Yêu cầu:
         });
       }
 
+      const knowledgeContext = buildKnowledgePromptContext({
+        category,
+        maSanPham,
+        productName: name,
+        type: "product_seo_content",
+      });
+
       const prompt = `Bạn là chuyên gia SEO On-page và Copywriter hàng đầu cho thương hiệu may đồng phục Univi (dongphucunivi.com).
-Nhiệm vụ của bạn: Tối ưu và chỉnh sửa lại nội dung chi tiết bài viết giới thiệu sản phẩm dưới đây thành một bài viết chuẩn SEO On-page hoàn hảo, giữ chân khách hàng và gia tăng tỷ lệ chuyển đổi đặt may đồng phục.
+Dưới đây là BỘ TRI THỨC CHUẨN (Source of Truth) của Univi từ /docs/knowledge. Bạn BẮT BUỘC phải đọc và áp dụng chính xác các quy chuẩn về chất liệu vải, công nghệ UNI DRY và quy tắc claim:
+${knowledgeContext}
 
 Thông tin sản phẩm:
+- Mã sản phẩm: ${maSanPham || "Chưa có mã"}
 - Tên sản phẩm: ${name || "Đồng phục cao cấp Univi"}
 ${category ? `- Danh mục: ${category}` : ""}
 ${material ? `- Chất liệu: ${material}` : ""}
@@ -319,15 +382,17 @@ ${rawContent}
 
 Yêu cầu biên tập chuẩn SEO On-page:
 1. GIỮ NGUYÊN TOÀN BỘ các thẻ hình ảnh <img>, liên kết <a>, bảng <table> nếu có trong nội dung gốc (tuyệt đối không làm mất URL ảnh hay đường link đã chèn).
-2. Tái cấu trúc bài viết mạch lạc, bố cục chuẩn SEO:
-   - Sử dụng các thẻ tiêu đề <h2>, <h3> cuốn hút, chứa từ khóa liên quan đến tên sản phẩm và dòng đồng phục (ví dụ: Đặc điểm nổi bật, Chất liệu vải & Công nghệ may, Bảng thông số & Hướng dẫn chọn size, Tại sao nên chọn may đồng phục Univi...).
+2. Tái cấu trúc bài viết mạch lạc, bố cục chuẩn SEO dựa theo kiến thức thực tế của Univi:
+   - Sử dụng các thẻ tiêu đề <h2>, <h3> rõ ràng, cuốn hút (ví dụ: Đặc điểm nổi bật, Chất liệu vải & Công nghệ thoát ẩm UNI DRY, Bảng thông số & Hướng dẫn bảo quản, Tại sao các phòng tập và đội nhóm tin chọn Univi...).
+   - Viết đúng các thông số thực tế của 5 dòng vải Univi (UNI QUICKDRY, UNI SUPERCOOL, UNI AIR, UNI COOL PIQUÉ, UNI ELITE), cam kết chất liệu an toàn lành tính cho da.
    - Đoạn văn ngắn gọn (2-4 câu/đoạn), rõ ràng, dễ đọc trên di động.
-   - Sử dụng danh sách gạch đầu dòng <ul><li> để làm nổi bật các tính năng vượt trội: thoáng mát, co giãn, thấm hút mồ hôi, bền màu, in/thêu logo sắc nét.
-   - Bổ sung lời kêu gọi hành động (CTA) chuyên nghiệp, tự nhiên ở cuối bài (khuyên khách hàng liên hệ hotline/zalo Univi để nhận mẫu vải và báo giá ưu đãi).
-3. Đảm bảo từ khóa chính và các từ khóa phụ (may đồng phục, áo thun, polo, thể thao...) xuất hiện tự nhiên, tránh nhồi nhét.
-4. ĐỊNH DẠNG ĐẦU RA BẮT BUỘC:
+   - Sử dụng danh sách gạch đầu dòng <ul><li> để làm nổi bật các tính năng vượt trội: thoáng mát, co giãn, thoát ẩm một chiều, độ bền màu, in/thêu logo sắc nét.
+   - Bổ sung lời kêu gọi hành động (CTA) chuẩn B2B ở cuối bài theo đúng thư viện CTA của Univi (hướng dẫn khách hàng liên hệ hotline/zalo Univi để nhận tư vấn mẫu và thiết kế mockup 3D miễn phí).
+3. TUYỆT ĐỐI TUÂN THỦ TỪ CẤM từ Knowledge: KHÔNG dùng "số 1", "dẫn đầu", "hàng đầu", "giá rẻ nhất", "mua ngay/chốt đơn", "chất lượng gấp đôi giá bằng một nửa"...
+4. TUYỆT ĐỐI KHÔNG nhắc đến "QCVN 01:2017/BCT" hay từ viết tắt QCVN trong bất kỳ câu chữ nào.
+5. ĐỊNH DẠNG ĐẦU RA BẮT BUỘC:
    - Trả về DUY NHẤT mã HTML hợp lệ để hiển thị trực tiếp trong trình soạn thảo Rich Text (<p>, <h2>, <h3>, <ul>, <li>, <strong>, <table>, <img>, <a>...).
-   - Tuyệt đối KHÔNG bọc trong khối code markdown (như \`\`\`html hoặc \`\`\`), KHÔNG kèm lời dẫn "Dưới đây là..." hay giải thích bên ngoài.`;
+   - Tuyệt đối KHÔNG bọc trong khối code markdown (không dùng ba dấu backtick), KHÔNG kèm lời dẫn "Dưới đây là..." hay giải thích bên ngoài.`;
 
       const generatedHtml = await callGemini(prompt, apiKey);
 
@@ -381,7 +446,7 @@ Quy tắc đặt tên màu:
 [
   {"id": 0, "name": "Tên màu"}
 ]
-Tuyệt đối KHÔNG bọc trong markdown code block (\`\`\`json), KHÔNG kèm lời dẫn nào khác.`;
+Tuyệt đối KHÔNG bọc trong markdown code block, KHÔNG kèm lời dẫn nào khác.`;
 
         const rawJson = await callGemini(prompt, apiKey);
         let cleanJson = rawJson.replace(/```(?:json)?/gi, "").replace(/```/g, "").trim();
