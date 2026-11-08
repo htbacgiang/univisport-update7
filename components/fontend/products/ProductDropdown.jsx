@@ -72,17 +72,17 @@ const ProductDropdown = () => {
             </div>
             <ul className="space-y-3 pl-2">
               <li>
-                <Link href="/dong-phuc-ao-polo" className="hover:text-[#105d97]">
+                <Link href="/dong-phuc-polo" className="hover:text-[#105d97]">
                   Đồng phục áo Polo
                 </Link>
               </li>
               <li>
-                <Link href="/dong-phuc-cong-so" className="hover:text-[#105d97]">
+                <Link href="/dong-phuc-so-mi" className="hover:text-[#105d97]">
                   Đồng phục công sở
                 </Link>
               </li>
               <li>
-                <Link href="/dong-phuc-team-building" className="hover:text-[#105d97]">
+                <Link href="/dong-phuc-teambuilding" className="hover:text-[#105d97]">
                   Đồng phục Team building
                 </Link>
               </li>

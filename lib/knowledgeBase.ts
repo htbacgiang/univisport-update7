@@ -370,3 +370,69 @@ export function generateKnowledgeSeoContent(params: {
 </div>
 `.trim();
 }
+
+/**
+ * Fallback tạo Mô tả ngắn Feedback từ bộ Knowledge khi Gemini AI hết quota
+ */
+export function generateKnowledgeFeedbackDescription(params: {
+  customer: string;
+  title?: string;
+  category?: string;
+  industry?: string;
+  location?: string;
+  serviceTags?: string;
+}): string {
+  const customer = params.customer?.trim() || "đối tác";
+  const cat = params.category || "đồng phục thể thao";
+  const ind = params.industry ? ` ${params.industry}` : "";
+  const loc = params.location ? ` tại ${params.location}` : "";
+
+  let desc = `Giải pháp ${cat.toLowerCase()}${ind} chuyên nghiệp Univi thiết kế riêng cho ${customer}${loc}, ứng dụng công nghệ thoát ẩm UNI DRY một chiều thoáng mát, nâng tầm nhận diện thương hiệu.`;
+  if (desc.length > 185) {
+    desc = desc.slice(0, 182) + "...";
+  }
+  return desc;
+}
+
+/**
+ * Fallback tạo Tổng quan chi tiết Feedback từ bộ Knowledge khi Gemini AI hết quota
+ */
+export function generateKnowledgeFeedbackOverview(params: {
+  customer: string;
+  title?: string;
+  category?: string;
+  industry?: string;
+  location?: string;
+  employeeCount?: string;
+  serviceTags?: string;
+  year?: number | string;
+}): string {
+  const customer = params.customer?.trim() || "Đối tác";
+  const cat = params.category || "Đồng phục thể thao";
+  const ind = params.industry ? `bộ môn ${params.industry}` : "môi trường thể thao & vận động";
+  const loc = params.location ? ` tại ${params.location}` : "";
+  const services = params.serviceTags || "Đồng phục HLV, PT và Hội viên";
+
+  return `
+<h2>Bối cảnh & Bài toán đồng phục của ${customer}</h2>
+<p>${customer}${loc} là đơn vị hoạt động chuyên nghiệp trong lĩnh vực ${ind}. Với đặc thù cường độ vận động cao và tiếp xúc thường xuyên với khách hàng, ${customer} đặt ra yêu cầu khắt khe về trang phục: vừa phải đảm bảo sự thoải mái tối đa cho đội ngũ, vừa mang tính nhận diện đồng bộ, sang trọng và chuẩn mực thương hiệu.</p>
+
+<h2>Giải pháp đồng phục Univi & Công nghệ thoát ẩm UNI DRY</h2>
+<p>Thấu hiểu những tiêu chuẩn đó, Đồng Phục Univi đã tư vấn giải pháp trang phục toàn diện cho ${customer}:</p>
+<ul>
+  <li><strong>Chất liệu vải thể thao cao cấp:</strong> Tuyển chọn các dòng vải chuyên dụng của Univi với độ co giãn đa chiều, mềm mại, bền màu và an toàn lành tính cho làn da khi vận động đổ nhiều mồ hôi.</li>
+  <li><strong>Công nghệ thoát ẩm UNI DRY:</strong> Cơ chế dẫn ẩm 1 chiều tiên tiến giúp hút ẩm từ bề mặt da và phân tán nhanh ra mặt ngoài vải để bay hơi, giữ cho huấn luyện viên và nhân sự luôn khô ráo, tự tin suốt ngày dài.</li>
+  <li><strong>In thêu logo sắc nét:</strong> Ứng dụng công nghệ in PET (DTF) chuẩn màu nhận diện và đường chỉ may giấu kỹ thuật cao, đảm bảo độ bền tối đa qua nhiều chu kỳ giặt sấy.</li>
+  <li><strong>Hạng mục cung cấp:</strong> ${services}.</li>
+</ul>
+
+<h2>Trải nghiệm thực tế & Phản hồi từ ${customer}</h2>
+<p>Toàn thể đội ngũ nhân sự và ban lãnh đạo ${customer} đánh giá rất cao sản phẩm hoàn thiện của Univi. Phom dáng áo chuẩn chỉnh, tôn dáng người mặc và chất vải nhẹ mát đã tạo nên nguồn năng lượng tích cực, giúp nâng tầm hình ảnh chuyên nghiệp trong mắt học viên và đối tác.</p>
+<p>Bên cạnh đó, chính sách tư vấn thiết kế mockup 3D miễn phí cùng khả năng lưu trữ thông số rập của Univi giúp ${customer} hoàn toàn an tâm khi tái đặt hàng đồng bộ cho các giai đoạn mở rộng tiếp theo.</p>
+
+<div class="univi-cta-box" style="margin-top: 24px; padding: 18px 22px; background: #f8fafc; border-left: 4px solid #105d97; border-radius: 8px;">
+  <h3 style="margin-top: 0; color: #0f172a; font-size: 1.15rem;">Bạn đang tìm giải pháp đồng phục chuyên nghiệp cho thương hiệu của mình?</h3>
+  <p style="margin-bottom: 0; color: #475569;">Đồng Phục Univi là đơn vị tiên phong cung cấp giải pháp đồng phục thể thao và doanh nghiệp cho hàng ngàn chuỗi phòng tập, CLB và tổ chức trên toàn quốc. Nhận đơn may từ 10 sản phẩm, hỗ trợ thiết kế mockup 3D miễn phí. Liên hệ ngay hotline hoặc Zalo của Univi để nhận tư vấn chi tiết!</p>
+</div>
+`.trim();
+}

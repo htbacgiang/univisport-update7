@@ -8,7 +8,7 @@ export default function AboutNavigation() {
       {
         title: "2017: Thành Lập",
         description:
-          "Đồng Phục Univi chính thức được thành lập tại Hà Đông, Hà Nội, với xưởng sản xuất đầu tiên đặt tại Sóc Sơn. Giai đoạn đầu, Univi tập trung vào thiết kế và sản xuất các dòng đồng phục cho doanh nghiệp, công ty, đồng phục công sở như áo sơ mi, áo polo, đồng phục teambuilding cho các doanh nghiệp vừa và nhỏ. Công ty TNHH Bảo Phong Evenes – tiền thân của Univi, được thành lập vào tháng 7/2017, đánh dấu bước đi đầu tiên trên hành trình xây dựng thương hiệu.",
+          "Đồng Phục Univi chính thức được thành lập năm 2017 tại Hà Nội. Giai đoạn đầu, Univi tập trung vào thiết kế và sản xuất các dòng đồng phục cho doanh nghiệp, công ty, đồng phục công sở như áo sơ mi, áo polo, đồng phục teambuilding cho các doanh nghiệp vừa và nhỏ, đánh dấu bước đi đầu tiên trên hành trình xây dựng thương hiệu.",
       },
       {
         title: "2017-2019: Khởi Đầu",
@@ -23,7 +23,7 @@ export default function AboutNavigation() {
       {
         title: "2021-2022: Vượt Đại Dịch",
         description:
-          "Đại dịch Covid-19 mang đến thách thức chưa từng có. Tuy nhiên, bằng sự lãnh đạo quyết liệt và tinh thần đoàn kết, Univi không chỉ đứng vững mà còn lan tỏa hình ảnh của một doanh nghiệp gắn bó, nhân văn và bản lĩnh. Trong giai đoạn này, công ty mở rộng quy mô sản xuất với xưởng mới tại Hải Dương, bổ sung nguồn lực để chuẩn bị cho những bước đi tiếp theo.",
+          "Đại dịch Covid-19 mang đến thách thức chưa từng có. Tuy nhiên, bằng sự lãnh đạo quyết liệt và tinh thần đoàn kết, Univi không chỉ đứng vững mà còn lan tỏa hình ảnh của một doanh nghiệp gắn bó, nhân văn và bản lĩnh. Trong giai đoạn này, công ty mở rộng quy mô sản xuất, bổ sung nguồn lực để chuẩn bị cho những bước đi tiếp theo.",
       },
       {
         title: "2023-2025: Chuyển Hướng Thể Thao",
@@ -91,11 +91,22 @@ export default function AboutNavigation() {
 
                   <div className={`overflow-hidden transition-all duration-500 ${activeItem === item.title ? 'max-h-96 opacity-100' : 'max-h-16 opacity-70'
                     }`}>
-                    <p className="text-gray-700 leading-6 text-sm md:text-base">
-                      {activeItem === item.title
-                        ? item.description
-                        : `${item.description.substring(0, 120)}...`
+                    {/* Luôn render đầy đủ nội dung trong HTML server-rendered;
+                        mục chưa mở chỉ được thu gọn bằng CSS (2 dòng). */}
+                    <p
+                      className="text-gray-700 leading-6 text-sm md:text-base"
+                      style={
+                        activeItem === item.title
+                          ? undefined
+                          : {
+                              display: "-webkit-box",
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden",
+                            }
                       }
+                    >
+                      {item.description}
                     </p>
                   </div>
 

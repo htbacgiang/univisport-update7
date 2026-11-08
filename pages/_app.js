@@ -291,7 +291,8 @@ function MyApp({ Component, pageProps: { session, meta, ...pageProps } }) {
         {/*
           ── JSON-LD: FAQPage thương hiệu ─────────────────────────────
           CHỈ inject ở trang chủ (pathname === "/").
-          Trang bài viết [slug].tsx tự inject FAQPage riêng → không duplicate.
+          Lưu ý: pages/[slug].tsx (DirectPost) hiện CHỈ inject BreadcrumbList,
+          chưa có FAQPage — FAQ của DirectPost chỉ hiển thị dạng HTML <details>.
         */}
         {isHomePage && homepageFaqSchema && (
           <script

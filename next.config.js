@@ -23,6 +23,67 @@ const nextConfig = {
         destination: "/dong-phuc-yoga/:path*",
         statusCode: 301,
       },
+      // Sprint 0.4.3 (08/11/2026): 301 cho URL cũ đã 404 (audit R1–R6), 1 hop, không về trang chủ.
+      // R1–R5: slug blog bị đổi ngày 06/11 không kèm redirect.
+      {
+        source: "/bai-viet/welly-fitness-chon-univi-dong-phuc-5-sao",
+        destination: "/bai-viet/welly-fitness-chon-univi-dong-phuc-5-sao-chuan-cong-nghe",
+        statusCode: 301,
+      },
+      {
+        source: "/bai-viet/dong-phuc-hlv-goldmark-fitness",
+        destination: "/bai-viet/dong-phuc-hlv-goldmark-fitness-chuan-form-and-chuyen-nghiep-trong-van-hanh",
+        statusCode: 301,
+      },
+      // R3, R4: slug tạo từ tiêu đề của bài đích TRÙNG với source. Nếu bài đích bị lưu lại
+      // khi lỗi SeoForm (tự đổi slug) chưa được vá, slug sẽ thành source và redirect này chặn bài.
+      {
+        source: "/bai-viet/feedback-dong-phuc-one-coach-fitness-bac-ninh",
+        destination: "/bai-viet/feedback-dong-phuc-one-coach-fitness-bac-ninh-or-univi",
+        statusCode: 301,
+      },
+      {
+        source: "/bai-viet/ao-gym-dai-tay-8-mau-and-cach-chon-cho-phong-tap",
+        destination: "/bai-viet/ao-gym-dai-tay-8-mau-and-cach-chon-cho-phong-tap-or-univi",
+        statusCode: 301,
+      },
+      {
+        source: "/bai-viet/20-mau-ao-gym-dep-cho-phong-tap-2026",
+        destination: "/bai-viet/20-mau-ao-gym-dep-cho-phong-tap-and-pt-studio-2026",
+        statusCode: 301,
+      },
+      // R6: URL cũ từng nằm trong sitemap đến 07/11.
+      {
+        source: "/polo-doanh-nghiep",
+        destination: "/dong-phuc-polo",
+        statusCode: 301,
+      },
+      // Sprint 0.4.4 (08/11/2026): 5 bài bị lỗi SeoForm tự đổi slug khi lưu; giữ slug mới (= slug tạo từ tiêu đề).
+      {
+        source: "/bai-viet/vai-pique-the-thao-univi",
+        destination: "/bai-viet/vai-pique-the-thao-uni-cool-pique-mem-mat-co-gian",
+        statusCode: 301,
+      },
+      {
+        source: "/bai-viet/ao-polo-the-thao-cho-hlv-phong-tap",
+        destination: "/bai-viet/ao-polo-the-thao-cho-hlv-phong-tap-vi-sao-khac-polo-truyen-thong",
+        statusCode: 301,
+      },
+      {
+        source: "/bai-viet/bao-gia-dong-phuc-the-thao-thang-102026-or-univi",
+        destination: "/bai-viet/bao-gia-dong-phuc-the-thao-thang-102026",
+        statusCode: 301,
+      },
+      {
+        source: "/bai-viet/bao-gia-ao-pickleball-theo-so-luong-102026-or-univi",
+        destination: "/bai-viet/bao-gia-ao-pickleball-theo-so-luong-102026",
+        statusCode: 301,
+      },
+      {
+        source: "/bai-viet/ao-choi-the-thao-khac-ao-bong-da-nhu-the-nao-or-univi",
+        destination: "/bai-viet/ao-choi-the-thao-khac-ao-bong-da-nhu-the-nao",
+        statusCode: 301,
+      },
     ];
   },
 

@@ -10,7 +10,7 @@ const CategoryShop = () => {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {/* Đồng phục công ty Card */}
-        <Link href="/dong-phuc-ao-polo">
+        <Link href="/dong-phuc-polo">
           <div className="relative rounded-lg overflow-hidden shadow-sm aspect-square transition-transform duration-300 hover:scale-105 cursor-pointer">
             <Image
               src="/product/ao-polo.webp"
@@ -26,7 +26,7 @@ const CategoryShop = () => {
         </Link>
 
         {/* Đồng phục lớp Card */}
-        <Link href="/dong-phuc-cong-so">
+        <Link href="/dong-phuc-so-mi">
           <div className="relative rounded-lg overflow-hidden shadow-sm aspect-square transition-transform duration-300 hover:scale-105 cursor-pointer">
             <Image
               src="/product/cong-so.webp"
@@ -41,7 +41,7 @@ const CategoryShop = () => {
           </div>
         </Link>
         {/* Đồng phục lớp Card */}
-        <Link href="/dong-phuc-team-building">
+        <Link href="/dong-phuc-teambuilding">
           <div className="relative rounded-lg overflow-hidden shadow-sm aspect-square transition-transform duration-300 hover:scale-105 cursor-pointer">
             <Image
               src="/product/team-building.webp"

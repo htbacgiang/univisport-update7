@@ -88,6 +88,12 @@ const reviewSchema = new mongoose.Schema(
       maxlength: 1000,
       default: "",
     },
+    // Sprint 0.5.1A: review chỉ hiển thị công khai / tính điểm khi admin duyệt.
+    // Review cũ không có trường này được coi là CHƯA duyệt (kiểm tra bằng `approved === true`).
+    approved: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

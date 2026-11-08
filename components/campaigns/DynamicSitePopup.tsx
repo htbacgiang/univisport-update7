@@ -63,11 +63,31 @@ export const DynamicSitePopup: React.FC<DynamicSitePopupProps> = ({
   // Đọc query param ?popup_test=... từ URL để test nhanh ngoài trang chủ (nếu cần)
   const queryPopupTest = typeof router?.query?.popup_test === "string" ? router.query.popup_test : null;
 
+  // Phát hiện thiết bị di động (Mobile lần đầu hoặc lần sau đều KHÔNG tự bật)
+  const [isMobileDevice, setIsMobileDevice] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const checkMobile = () => {
+      const isTouchOrSmallScreen =
+        window.matchMedia?.("(max-width: 767px)").matches || window.innerWidth < 768;
+      const isMobileUA =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(
+          navigator.userAgent || ""
+        );
+      setIsMobileDevice(isTouchOrSmallScreen || isMobileUA);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   // Loại trừ: Chỉ hiển thị duy nhất tại trang chủ (/), trừ khi ép test bằng forceType (preview trong dashboard) hoặc param ?popup_test
+  // Mobile lần đầu hoặc lần truy cập sau: Hoàn toàn không tự bật
   const isExcludedRoute =
     !forceType &&
     !queryPopupTest &&
     (!isHomePage ||
+      isMobileDevice ||
       currentPath.startsWith("/dashboard") ||
       currentPath.startsWith("/admin") ||
       currentPath.startsWith("/auth"));
@@ -203,11 +223,11 @@ export const DynamicSitePopup: React.FC<DynamicSitePopupProps> = ({
   }
 
   // Hết ngày hiển thị ngày lễ (hoặc không có ngày lễ nào active)
-  // Tự động quay lại Popup mặc định là ContactForm!
+  // Tự động quay lại Popup mặc định là ContactForm (trên Desktop sau 30 giây)!
   return (
     <ContactFormPopup
       autoCloseSeconds={resolved.autoCloseSeconds || 20}
-      delayMs={(resolved.delaySeconds || 2) * 1000}
+      delayMs={Math.max(30000, (resolved.delaySeconds || 30) * 1000)}
       pauseOnInteraction={resolved.pauseOnInteraction}
       title={resolved.defaultPopup?.title}
       subtitle={resolved.defaultPopup?.subtitle}

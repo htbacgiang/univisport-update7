@@ -113,7 +113,7 @@ export default function AboutUniviPage() {
           </p>
           <div className="bg-blue-50 rounded-xl p-5 border-l-4 border-[#105d97]">
             <p className="text-gray-700 leading-6 font-medium">
-              Mục tiêu lớn của Univi là duy trì quan hệ tốt với <span className="font-semibold text-[#105d97]">hàng trăm nghìn khách hàng</span> và đối tác trên cả nước. Chiến lược 2025-2028 nhấn mạnh việc trở thành lựa chọn hàng đầu trong mảng Đồng Phục Thể Thao và xây dựng thương hiệu mạnh mẽ trong ngành sản xuất thời trang tại Việt Nam.
+              Mục tiêu lớn của Univi là duy trì quan hệ tốt với <span className="font-semibold text-[#105d97]">hàng trăm nghìn khách hàng</span> và đối tác trên cả nước. Chiến lược 2025-2028 tập trung phát triển mảng Đồng Phục Thể Thao và xây dựng thương hiệu mạnh mẽ trong ngành sản xuất thời trang tại Việt Nam.
             </p>
           </div>
         </div>
@@ -125,8 +125,8 @@ export default function AboutUniviPage() {
 
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
           {[
-            { n: '01', title: 'Biểu tượng sáng tạo hàng đầu', sub: 'trong lĩnh vực Đồng Phục', icon: Lightbulb },
-            { n: '02', title: 'Số 1 Đồng Phục Thể Thao', sub: 'tại Việt Nam', icon: Target },
+            { n: '01', title: 'Định hướng sáng tạo', sub: 'trong lĩnh vực Đồng Phục', icon: Lightbulb },
+            { n: '02', title: 'Chuyên sâu Đồng Phục Thể Thao', sub: 'tại Việt Nam', icon: Target },
             { n: '03', title: 'Kiến tạo thương hiệu', sub: 'qua Đồng Phục', icon: Network },
             { n: '04', title: 'Đồng Phục Toàn Diện', sub: 'cho doanh nghiệp', icon: CheckCircle },
             { n: '05', title: 'Ngôn ngữ thương hiệu', sub: 'mạnh mẽ nhất', icon: Zap },
@@ -143,7 +143,7 @@ export default function AboutUniviPage() {
 
         <div className="space-y-4">
           <p className="text-gray-700 leading-6 text-base">
-            Univi định hướng trở thành <strong className="text-[#105d97]">biểu tượng sáng tạo hàng đầu</strong> trong lĩnh vực Đồng Phục tại Việt Nam, đặc biệt là mảng <strong className="text-[#105d97]">Đồng Phục Thể Thao chuyên sâu</strong>. Chúng tôi kiến tạo hình ảnh thương hiệu thông qua sự kết hợp tinh tế giữa:
+            Univi định hướng phát triển theo hướng <strong className="text-[#105d97]">sáng tạo</strong> trong lĩnh vực Đồng Phục tại Việt Nam, đặc biệt là mảng <strong className="text-[#105d97]">Đồng Phục Thể Thao chuyên sâu</strong>. Chúng tôi kiến tạo hình ảnh thương hiệu thông qua sự kết hợp tinh tế giữa:
           </p>
           <ul className="bg-gray-50 rounded-xl p-5 space-y-2">
             <Bullet><strong>Công nghệ sản xuất hiện đại</strong></Bullet>
@@ -169,7 +169,7 @@ export default function AboutUniviPage() {
           <div className="overflow-hidden rounded-xl shadow-sm">
             <Image
               src="/images/gioi-thieu/nang-luc-san-xuat.jpg"
-              alt="Phân xưởng sản xuất số 03 tại Hà Nội"
+              alt="Khu vực sản xuất đồng phục của Đồng Phục Univi"
               width={800} height={400}
               layout="responsive"
               sizes="(max-width: 800px) 100vw, 800px"
@@ -177,20 +177,20 @@ export default function AboutUniviPage() {
             />
           </div>
           <figcaption className="text-center text-sm text-gray-500 pt-4 italic">
-            Hình ảnh tại phân xưởng sản tại Hà Nội
+            Hình ảnh khu vực sản xuất của Đồng Phục Univi
           </figcaption>
         </figure>
 
         <div className="space-y-4">
           <div className="bg-gray-50 rounded-xl p-5">
             <p className="text-gray-700 leading-6">
-              Xưởng may Univi là nơi kết tinh giữa <strong className="text-[#105d97]">công nghệ hiện đại</strong>, <strong className="text-[#105d97]">tay nghề tinh hoa</strong> cùng sự nghiên cứu chuyên sâu về chất liệu tạo nên sự khác biệt vượt trội trong ngành đồng phục tại Việt Nam.
+              Xưởng may Univi là nơi kết tinh giữa <strong className="text-[#105d97]">công nghệ hiện đại</strong>, <strong className="text-[#105d97]">tay nghề tinh hoa</strong> cùng sự nghiên cứu chuyên sâu về chất liệu, tạo nên sự khác biệt cho sản phẩm đồng phục của Univi.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
               { title: 'Dây chuyền sản xuất tiên tiến', body: 'Với dây chuyền sản xuất tiên tiến được tối ưu hóa từng khâu, Univi không chỉ đảm bảo hiệu suất sản xuất vượt trội mà còn duy trì sự đồng nhất và hoàn hảo trong từng chi tiết sản phẩm.' },
-              { title: 'Đội ngũ thợ lành nghề', body: 'Đội ngũ thợ lành nghề của chúng tôi không chỉ làm việc bằng kinh nghiệm mà còn bằng đam mê sáng tạo, luôn đặt chất lượng và sự hài lòng của khách hàng lên hàng đầu.' },
+              { title: 'Đội ngũ thợ lành nghề', body: 'Đội ngũ thợ lành nghề của chúng tôi không chỉ làm việc bằng kinh nghiệm mà còn bằng đam mê sáng tạo, luôn ưu tiên chất lượng và sự hài lòng của khách hàng.' },
             ].map((c) => (
               <div key={c.title} className="bg-white rounded-xl p-5 border border-gray-100">
                 <h4 className="font-medium text-gray-900 mb-2">{c.title}</h4>
@@ -224,13 +224,13 @@ export default function AboutUniviPage() {
           </StepCard>
           <StepCard number="3" title="Lựa chọn nguyên phụ liệu">
             <p className="text-gray-700 leading-6">
-              Univi cung cấp chất liệu vải, loại sợi và màu sắc để khách hàng lựa chọn. Tư vấn các loại vải phù hợp với nhu cầu sử dụng. Univi cam kết tất cả vải sử dụng đều có kiểm định an toàn với da.
+              Univi cung cấp chất liệu vải, loại sợi và màu sắc để khách hàng lựa chọn. Tư vấn các loại vải phù hợp với nhu cầu sử dụng và cung cấp thông tin chất liệu theo từng mã vải.
             </p>
           </StepCard>
           <StepCard number="4" title="Sản xuất">
             <ul className="space-y-2">
-              <Bullet>Đối với mẫu có sẵn, Univi có thể giao hàng trong vòng <strong className="text-[#105d97]">3 ngày</strong> (bao gồm thời gian in Logo).</Bullet>
-              <Bullet>Đối với đơn hàng thiết kế, thời gian gia công mẫu trong vòng <strong className="text-[#105d97]">2 ngày</strong> từ ngày chốt mẫu rập.</Bullet>
+              <Bullet>Thời gian sản xuất tham khảo từ <strong className="text-[#105d97]">3–7 ngày làm việc</strong>, tùy đơn hàng.</Bullet>
+              <Bullet>Tiến độ cụ thể được xác nhận theo số lượng, mẫu thiết kế, chất liệu, kỹ thuật hoàn thiện, thời điểm duyệt mẫu và lịch sản xuất.</Bullet>
             </ul>
           </StepCard>
           <StepCard number="5" title="Kiểm tra và đánh giá" accent>
@@ -361,13 +361,13 @@ export default function AboutUniviPage() {
 
         <div className="space-y-4">
           <StepCard number="3" title="An toàn với sức khỏe người mặc">
-            <p className="text-gray-700 leading-6">Tất cả chất liệu vải mà Univi sử dụng đều được kiểm định an toàn với da.</p>
+            <p className="text-gray-700 leading-6">Chất liệu được lựa chọn theo nhu cầu vận động và tư vấn theo từng mã vải.</p>
           </StepCard>
 
 
-          <StepCard number="4" title="Giá Cả Hợp Lí Nhất">
+          <StepCard number="4" title="Giá Cả Hợp Lý, Báo Giá Rõ Ràng">
             <p className="text-gray-700 leading-6">
-              Tất cả sản phẩm của Univi đều có mức giá hợp lý. Cam kết chất lượng đi kèm mức giá hấp dẫn chỉ từ <strong className="text-[#105d97]">99.000 đ</strong> cho các sản phẩm trung cao cấp.
+              Giá được tư vấn theo sản phẩm, chất liệu, số lượng và yêu cầu hoàn thiện. Một số sản phẩm có giá tham khảo từ <strong className="text-[#105d97]">99.000đ</strong>; báo giá chính thức được xác nhận theo từng đơn hàng.
             </p>
           </StepCard>
           <StepCard number="5" title="Chế Độ Bảo Hành và Hậu Mãi" accent>

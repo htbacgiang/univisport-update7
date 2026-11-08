@@ -21,7 +21,7 @@ const categories = [
     {
         name: "Đồng phục công sở",
         eyebrow: "ĐỒNG PHỤC CÔNG SỞ",
-        slug: "/dong-phuc-cong-so",
+        slug: "/dong-phuc-so-mi",
         image: "/product/cong-so.jpg",
         count: 15,
         layout: "col-span-4",
@@ -66,7 +66,7 @@ const categories = [
     {
         name: "Đồng phục Áo Polo",
         eyebrow: "QUÀ TẶNG DOANH NGHIỆP",
-        slug: "/dong-phuc-ao-polo",
+        slug: "/dong-phuc-polo",
         image: "/images/qua-tang-doanh-nghiep.png",
         count: 10,
         layout: "col-span-3",

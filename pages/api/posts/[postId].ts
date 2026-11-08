@@ -69,7 +69,8 @@ const updatePost: NextApiHandler = async (req, res) => {
       const cleanSnippet = body.content
         ? String(body.content).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().substring(0, 160)
         : "";
-      body.meta = cleanSnippet || body.title || post.meta || "Bài viết Univisport";
+      // Sprint 0.4.4: ưu tiên meta đang lưu; trước đây meta viết tay bị thay bằng 160 ký tự đầu nội dung.
+      body.meta = post.meta || cleanSnippet || body.title || "Bài viết Univisport";
     }
 
     if (!body.slug || !String(body.slug).trim()) {

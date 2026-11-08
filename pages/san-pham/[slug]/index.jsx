@@ -164,22 +164,29 @@ export async function getServerSideProps({ params }) {
     const numericOriginalPrice = typeof product.originalPrice === 'number' ? product.originalPrice : parseFloat(product.originalPrice);
     const hasOriginalPrice = Number.isFinite(numericOriginalPrice) && numericOriginalPrice > numericPrice;
 
-    // Chỉ đính kèm aggregateRating & review vào Schema nếu có đánh giá thật từ người dùng
-    // (Tuân thủ nghiêm ngặt nguyên tắc Google Search Central để tránh bị Manual Action)
-    const realReviews = Array.isArray(product.reviews) ? product.reviews : [];
-    const realReviewCount = realReviews.length;
-    const realRatingSum = realReviews.reduce((sum, r) => sum + (Number(r.rating) || 0), 0);
-    const realAvgRating = realReviewCount > 0 ? Math.round((realRatingSum / realReviewCount) * 10) / 10 : 0;
+    // Sprint 0.5.1A: KHÔNG xuất aggregateRating/review vào Schema (xem SPRINT-0.5 C1).
+    // Chỉ truyền xuống client các review ĐÃ DUYỆT, với các trường cần hiển thị,
+    // để review chưa duyệt không lộ ra trong __NEXT_DATA__.
+    const approvedReviews = (Array.isArray(product.reviews) ? product.reviews : [])
+      .filter((r) => r && r.approved === true)
+      .map((r) => ({ name: r.name, rating: r.rating, comment: r.comment || '', createdAt: r.createdAt || null }));
+    const approvedReviewCount = approvedReviews.length;
+    product.reviews = approvedReviews;
+    product.reviewCount = approvedReviewCount;
+    product.rating = approvedReviewCount > 0
+      ? Math.round((approvedReviews.reduce((s, r) => s + (Number(r.rating) || 0), 0) / approvedReviewCount) * 10) / 10
+      : 0;
 
-    const productSizes = Array.isArray(product.sizes) && product.sizes.length > 0
-      ? product.sizes
-      : ['S', 'M', 'L', 'XL', '2XL', '3XL'];
+    // Sprint 0.5.1A (H1): chỉ dùng size/material có thật trong DB — không fallback.
+    const productSizes = Array.isArray(product.sizes)
+      ? product.sizes.map((s) => (typeof s === 'string' ? s.trim() : '')).filter(Boolean)
+      : [];
 
     const colorNames = Array.isArray(product.colors)
       ? product.colors.map((c) => c.name?.trim()).filter(Boolean)
       : [];
 
-    const materialValue = product.material?.trim() || 'Vải thể thao UNI DRY cao cấp (thoáng khí, co giãn 4 chiều, chống UV)';
+    const materialValue = typeof product.material === 'string' ? product.material.trim() : '';
 
     const productVariants = Array.isArray(product.colors) && product.colors.length > 0
       ? product.colors.map((colorObj, idx) => {
@@ -192,8 +199,8 @@ export async function getServerSideProps({ params }) {
             'sku': variantSku,
             'image': colorImg,
             'color': colorObj.name || '',
-            'size': productSizes,
-            'material': materialValue,
+            ...(productSizes.length > 0 ? { 'size': productSizes } : {}),
+            ...(materialValue ? { 'material': materialValue } : {}),
             ...(hasValidPrice ? {
               'offers': {
                 '@type': 'Offer',
@@ -252,9 +259,9 @@ export async function getServerSideProps({ params }) {
           'description': product.description,
           'sku': product.maSanPham || `SP${product._id}`,
           'brand': { '@type': 'Brand', 'name': 'Đồng Phục Univi' },
-          'material': materialValue,
+          ...(materialValue ? { 'material': materialValue } : {}),
           ...(colorNames.length > 0 ? { 'color': colorNames.length === 1 ? colorNames[0] : colorNames } : {}),
-          'size': productSizes,
+          ...(productSizes.length > 0 ? { 'size': productSizes } : {}),
           ...(productVariants.length > 0 ? { 'hasVariant': productVariants } : {}),
           ...(hasValidPrice ? {
             'offers': {
@@ -273,30 +280,8 @@ export async function getServerSideProps({ params }) {
               },
             },
           } : {}),
-          ...(realReviewCount > 0 ? {
-            'aggregateRating': {
-              '@type': 'AggregateRating',
-              'ratingValue': realAvgRating,
-              'reviewCount': realReviewCount,
-              'bestRating': '5',
-              'worstRating': '1',
-            },
-            'review': realReviews.map((r) => ({
-              '@type': 'Review',
-              'author': {
-                '@type': 'Person',
-                'name': r.name || 'Khách hàng',
-              },
-              ...(r.createdAt ? { 'datePublished': new Date(r.createdAt).toISOString().split('T')[0] } : {}),
-              'reviewRating': {
-                '@type': 'Rating',
-                'ratingValue': r.rating,
-                'bestRating': '5',
-                'worstRating': '1',
-              },
-              'reviewBody': r.comment || '',
-            })),
-          } : {}),
+          // aggregateRating / review: tạm gỡ (Sprint 0.5.1A). Chỉ bật lại khi review đã duyệt
+          // được render trong HTML server và khớp số liệu (SPRINT-0.5 mục 7.3).
         },
         ...(validFaqs.length > 0 ? [{
           '@context': 'https://schema.org',

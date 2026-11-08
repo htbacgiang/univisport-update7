@@ -358,7 +358,7 @@ const projects = [
     alt: 'Đội ngũ HLV Goldmark Fitness mặc đồng phục Gym Univi',
     text: 'Đồng phục cho đội ngũ HLV phải giữ form gọn khi squat, thị phạm và hỗ trợ hội viên trong cả ca làm việc. Goldmark Fitness nằm trong danh sách khách hàng đã đặt mẫu AG18.',
     feedback: '/feedback/feedback-goldmark-fitness',
-    article: '/bai-viet/dong-phuc-hlv-goldmark-fitness',
+    article: '/bai-viet/dong-phuc-hlv-goldmark-fitness-chuan-form-and-chuyen-nghiep-trong-van-hanh',
   },
   {
     name: 'The One KickFit',
@@ -399,7 +399,7 @@ const projects = [
     imagePosition: 'object-[50%_40%]',
     text: 'Đồng phục chọn theo nhận diện của phòng tập, sử dụng mẫu polo thể thao AGPL17.',
     feedback: '/feedback/feedback-one-coach-fitnnes-bac-ninh',
-    article: '/bai-viet/feedback-dong-phuc-one-coach-fitness-bac-ninh',
+    article: '/bai-viet/feedback-dong-phuc-one-coach-fitness-bac-ninh-or-univi',
   },
   {
     name: 'Welly Fitness',
@@ -407,7 +407,7 @@ const projects = [
     alt: 'PT chuỗi phòng tập Welly Fitness mặc đồng phục Gym phối màu tím theo nhận diện',
     text: 'Chuỗi phòng tập cần đồng phục PT đồng bộ giữa các cơ sở, phối màu theo bộ nhận diện của thương hiệu.',
     feedback: '/feedback/chuoi-phong-tap-welly-fitness',
-    article: '/bai-viet/welly-fitness-chon-univi-dong-phuc-5-sao',
+    article: '/bai-viet/welly-fitness-chon-univi-dong-phuc-5-sao-chuan-cong-nghe',
   },
   {
     name: 'Mysterise Fitness',
@@ -427,10 +427,10 @@ const rolloutScenarios = [
 
 const relatedArticles = [
   ['Áo tập Gym đường trần Univi', '/bai-viet/ao-tap-gym-duong-tran-unvi', 'Đường may trần và cảm giác mặc khi vận động.'],
-  ['20+ mẫu áo Gym đẹp cho phòng tập và PT Studio', '/bai-viet/20-mau-ao-gym-dep-cho-phong-tap-2026', 'Tổng hợp mẫu áo theo kiểu dáng và vai trò.'],
+  ['20+ mẫu áo Gym đẹp cho phòng tập và PT Studio', '/bai-viet/20-mau-ao-gym-dep-cho-phong-tap-and-pt-studio-2026', 'Tổng hợp mẫu áo theo kiểu dáng và vai trò.'],
   ['3 mẫu áo Gym được ưa chuộng tại Univi', '/bai-viet/3-mau-ao-gym-duoc-ua-chuong-tai-univi', 'Các mẫu được phòng tập chọn nhiều.'],
   ['Đồng phục Personal Trainer: chọn áo phù hợp cho PT', '/bai-viet/dong-phuc-personal-trainer-chon-ao-phu-hop-cho-pt', 'Cách chọn áo theo hình ảnh và công việc của PT.'],
-  ['Áo Gym dài tay: 8 mẫu và cách chọn', '/bai-viet/ao-gym-dai-tay-8-mau-and-cach-chon-cho-phong-tap', 'Khi nào phòng tập nên dùng áo dài tay.'],
+  ['Áo Gym dài tay: 8 mẫu và cách chọn', '/bai-viet/ao-gym-dai-tay-8-mau-and-cach-chon-cho-phong-tap-or-univi', 'Khi nào phòng tập nên dùng áo dài tay.'],
   ['Polo hay áo thun thể thao cho phòng tập?', '/bai-viet/polo-hay-ao-thun-the-thao-phong-tap-univi', 'So sánh hai kiểu áo theo vị trí nhân sự.'],
   ['Đồng phục lễ tân phòng Gym', '/bai-viet/dong-phuc-le-tan-phong-gym', 'Gợi ý cho quầy lễ tân và tư vấn viên.'],
   ['Chất liệu vải đồng phục thể thao', '/chat-lieu-vai', 'Thông số 5 dòng vải và bảng màu Univi.'],

@@ -34,7 +34,7 @@ const QUICK_LINKS = [
   { label: "Đồng Phục Pilates", value: "/dong-phuc-pilates" },
   { label: "Đồng Phục Áo Gió", value: "/dong-phuc-ao-gio" },
   { label: "Đồng Phục Golf - Tennis", value: "/dong-phuc-golf-tennis" },
-  { label: "Đồng Phục Áo Polo", value: "/dong-phuc-ao-polo" },
+  { label: "Đồng Phục Áo Polo", value: "/dong-phuc-polo" },
   { label: "Đồng Phục MMA", value: "/dong-phuc-mma" },
   { label: "Đồng Phục Chạy Bộ", value: "/dong-phuc-chay-bo" },
   { label: "Đồng Phục Áo Thun", value: "/dong-phuc-ao-thun" },

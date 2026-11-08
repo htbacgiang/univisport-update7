@@ -104,29 +104,8 @@ export async function getServerSideProps() {
           url: `${CANONICAL_URL}#${fabric.id}`,
         })),
       },
-      // 4. Product / Service Offer Schema
-      {
-        "@context": "https://schema.org",
-        "@type": "Product",
-        "@id": `${CANONICAL_URL}#product`,
-        name: "Chất Liệu Vải May Đồng Phục Thể Thao Univi",
-        image: "https://dongphucunivi.com/images/chat-lieu-vai.webp",
-        description:
-          "Dòng chất liệu vải thể thao cao cấp UniAir, SuperCool, Cool Piqué, Uni Elite, QuickDry phục vụ may đo đồng phục doanh nghiệp, phòng Gym, Yoga, Golf, Pickleball.",
-        brand: {
-          "@type": "Brand",
-          name: "UNIVI",
-        },
-        offers: {
-          "@type": "AggregateOffer",
-          priceCurrency: "VND",
-          lowPrice: "120000",
-          highPrice: "350000",
-          offerCount: "5",
-          availability: "https://schema.org/InStock",
-          seller: { "@id": "https://dongphucunivi.com/#organization" },
-        },
-      },
+      // 4. (Sprint 0.5.1A) Đã gỡ Product + AggregateOffer 120.000–350.000đ: giá không hiển thị trên
+      //    trang và chưa được xác nhận. Chỉ thêm lại khi trang công khai giá thật.
       // 5. FAQPage Schema
       {
         "@context": "https://schema.org",

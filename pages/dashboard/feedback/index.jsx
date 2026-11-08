@@ -80,22 +80,42 @@ export default function FeedbackDashboard() {
           <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
             <nav className="flex space-x-8">
               <button
-                onClick={() => setActiveTab('list')}
-                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'list' ? 'border-[#105d97] text-[#105d97]' : 'border-transparent text-gray-500 hover:text-gray-700'
-                  }`}
+                onClick={() => {
+                  setActiveTab('list');
+                }}
+                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'list'
+                    ? 'border-[#105d97] text-[#105d97]'
+                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
               >
-                📋 Danh sách Feedback
+                📋 Danh sách Feedback ({projects.length})
               </button>
               <button
                 onClick={() => {
-                  setActiveTab('add');
                   setEditingProject(null);
+                  setActiveTab('add');
                 }}
-                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${activeTab === 'add' ? 'border-[#105d97] text-[#105d97]' : 'border-transparent text-gray-500 hover:text-gray-700'
-                  }`}
+                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                  activeTab === 'add' && !editingProject
+                    ? 'border-[#105d97] text-[#105d97]'
+                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
               >
-                {editingProject ? '✏️ Sửa Feedback' : '➕ Thêm Feedback'}
+                ➕ Thêm Feedback mới
               </button>
+              {editingProject && (
+                <button
+                  onClick={() => setActiveTab('add')}
+                  className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+                    activeTab === 'add'
+                      ? 'border-[#105d97] text-[#105d97]'
+                      : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  ✏️ Sửa: {editingProject.customer || editingProject.title || 'Feedback'}
+                </button>
+              )}
             </nav>
           </div>
         </div>
@@ -114,6 +134,10 @@ export default function FeedbackDashboard() {
           {!loading && activeTab === 'add' && (
             <AddFeedbackForm
               onSuccess={handleFeedbackAdded}
+              onCancel={() => {
+                setEditingProject(null);
+                setActiveTab('list');
+              }}
               editingProject={editingProject}
             />
           )}

@@ -63,10 +63,10 @@ const popupSettingSchema = new mongoose.Schema(
         type: Number,
         default: 20,
       },
-      // Độ trễ trước khi popup xuất hiện (giây)
+      // Độ trễ trước khi popup xuất hiện (giây) - Mặc định 30 giây cho Desktop (Mobile không tự bật)
       delaySeconds: {
         type: Number,
-        default: 2,
+        default: 30,
       },
       // Dừng đếm ngược khi người dùng điền hoặc tương tác vào form
       pauseOnInteraction: {

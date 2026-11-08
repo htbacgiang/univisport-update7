@@ -273,15 +273,15 @@ export const HolidayGreetingModal: React.FC<HolidayGreetingModalProps> = ({
           aria-modal="true"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Nút đóng (×) ở góc trên bên phải */}
+          {/* Nút đóng (×) ở góc trên bên phải - Chuẩn 44 × 44px WCAG */}
           <button
             ref={closeButtonRef}
             onClick={handleClose}
-            className="absolute top-3 right-3 sm:top-5 sm:right-5 z-30 p-2.5 sm:p-3 rounded-full bg-white/70 hover:bg-white text-stone-600 hover:text-[#105d97] shadow-lg ring-1 ring-black/5 transition-all duration-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#105d97]"
+            className="absolute top-3 right-3 sm:top-5 sm:right-5 z-30 w-[44px] h-[44px] min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-white/80 hover:bg-white text-stone-600 hover:text-[#105d97] shadow-lg ring-1 ring-black/5 transition-all duration-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#105d97] cursor-pointer"
             type="button"
             aria-label="Đóng popup thiệp chúc mừng"
           >
-            <X size={22} />
+            <X size={20} />
           </button>
 
           {/* Khung nội dung có thể cuộn linh hoạt trên mobile */}

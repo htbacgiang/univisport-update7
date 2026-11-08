@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import db from "../../../utils/db";
 import Product from "../../../models/Product";
 import { getServerSession } from "next-auth/next";
@@ -38,6 +39,7 @@ export default async function handler(req, res) {
             rating: review.rating,
             comment: review.comment,
             createdAt: review.createdAt,
+            approved: review.approved === true,
           });
         });
       });
@@ -73,5 +75,42 @@ export default async function handler(req, res) {
     }
   }
 
+  // PATCH { productSlug, reviewId, approved: boolean } — duyệt / bỏ duyệt (Sprint 0.5.1A)
+  if (req.method === "PATCH") {
+    try {
+      const { productSlug, reviewId, approved } = req.body || {};
+      if (typeof productSlug !== "string" || !/^[a-z0-9-]{1,200}$/i.test(productSlug)) {
+        return res.status(400).json({ error: "productSlug không hợp lệ" });
+      }
+      if (!reviewId || !mongoose.Types.ObjectId.isValid(String(reviewId))) {
+        return res.status(400).json({ error: "reviewId không hợp lệ" });
+      }
+      if (typeof approved !== "boolean") {
+        return res.status(400).json({ error: "approved phải là true/false" });
+      }
+
+      const product = await Product.findOne({ slug: productSlug });
+      if (!product) return res.status(404).json({ error: "Không tìm thấy sản phẩm" });
+      const review = product.reviews.id(String(reviewId));
+      if (!review) return res.status(404).json({ error: "Không tìm thấy đánh giá" });
+
+      review.approved = approved;
+
+      // Điểm/số lượng lưu trên sản phẩm chỉ tính review đã duyệt.
+      const approvedList = product.reviews.filter((r) => r.approved === true);
+      const count = approvedList.length;
+      product.reviewCount = count;
+      product.rating = count > 0
+        ? Math.round((approvedList.reduce((s, r) => s + (Number(r.rating) || 0), 0) / count) * 10) / 10
+        : 0;
+
+      await product.save();
+      return res.status(200).json({ approved: review.approved, rating: product.rating, reviewCount: product.reviewCount });
+    } catch (err) {
+      return res.status(500).json({ error: err.message });
+    }
+  }
+
+  res.setHeader("Allow", "GET, PATCH");
   return res.status(405).json({ error: "Method not allowed" });
 }

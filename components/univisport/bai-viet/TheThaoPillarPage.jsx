@@ -1182,7 +1182,7 @@ export default function TheThaoPillarPage() {
             <strong>Bài học từ Goldmark:</strong> nếu đồng phục dành cho HLV, hãy kiểm tra mẫu bằng chính các động tác mà HLV thực hiện hàng ngày thay vì chỉ đánh giá qua ảnh mockup.
           </div>
           <p className="mb-6 text-sm">
-            👉 <InternalLink href="/bai-viet/dong-phuc-hlv-goldmark-fitness">Đọc case Đồng Phục HLV Goldmark Fitness</InternalLink>
+            👉 <InternalLink href="/bai-viet/dong-phuc-hlv-goldmark-fitness-chuan-form-and-chuyen-nghiep-trong-van-hanh">Đọc case Đồng Phục HLV Goldmark Fitness</InternalLink>
           </p>
 
           <SectionSubheading>9.2 The One Kickfit – Áo HLV/PT cho Kickfit, Boxing và MMA</SectionSubheading>
@@ -1243,7 +1243,7 @@ export default function TheThaoPillarPage() {
             <strong>Bài học từ Welly Fitness:</strong> khi một hệ thống có nhiều bộ môn và nhiều vai trò, nên xây dựng một hệ đồng phục thay vì chỉ đặt một mẫu áo đơn lẻ.
           </div>
           <p className="mb-6 text-sm">
-            👉 <InternalLink href="/bai-viet/welly-fitness-chon-univi-dong-phuc-5-sao">Đọc case Welly Fitness</InternalLink>
+            👉 <InternalLink href="/bai-viet/welly-fitness-chon-univi-dong-phuc-5-sao-chuan-cong-nghe">Đọc case Welly Fitness</InternalLink>
           </p>
 
           <SectionSubheading>9.4 AhaGym – Đồng phục HLV với form thể thao và chất liệu UNI SUPER COOL</SectionSubheading>

@@ -227,22 +227,25 @@ const SEOForm: FC<Props> = ({
     onChange(newValues);
   };
 
+  // Tự tạo slug từ tiêu đề CHỈ khi viết bài mới.
+  // Sprint 0.4.4 (08/11/2026): trước đây effect này chạy cả khi sửa bài cũ, gửi lên form cha
+  // slug tạo từ tiêu đề cùng meta/tags/category/focusKeyword RỖNG (state chưa nạp initialValue),
+  // làm đổi URL bài và mất meta description/danh mục khi bấm Lưu.
   useEffect(() => {
-    if (!isSlugModified) {
-      const slug = slugify(title.toLowerCase(), {
-        strict: true,
-      });
-      const newValues = { ...values, slug };
-      setValues(newValues);
-      onChange(newValues);
-    }
+    if (isSlugModified || initialValue?.slug || !title.trim()) return;
+    const slug = slugify(title.toLowerCase(), {
+      strict: true,
+    });
+    const newValues = { ...values, slug };
+    setValues(newValues);
+    onChange(newValues);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, isSlugModified]);
+  }, [title, isSlugModified, initialValue]);
 
   useEffect(() => {
     if (initialValue) {
       const cat = initialValue.category || "";
-      setValues({
+      const loaded: SeoResult = {
         meta: initialValue.meta || "",
         slug: slugify(initialValue.slug || "", {
           strict: true,
@@ -250,12 +253,16 @@ const SEOForm: FC<Props> = ({
         tags: initialValue.tags || "",
         category: cat,
         focusKeyword: initialValue.focusKeyword || "",
-      });
+      };
+      setValues(loaded);
+      // Đồng bộ giá trị đã lưu lên form cha để bấm Lưu không gửi giá trị khác với giá trị đang hiển thị.
+      onChange(loaded);
       if (cat && !DEFAULT_BLOG_CATEGORIES.includes(cat as any)) {
         setIsCustomCategory(true);
       }
       if (initialValue.slug) setIsSlugModified(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialValue]);
 
   const { meta, slug, category, focusKeyword } = values;

@@ -96,6 +96,28 @@ export default function AdminReviewsPage() {
     }
   };
 
+  // Sprint 0.5.1A: duyệt / bỏ duyệt — chỉ review đã duyệt mới hiển thị công khai.
+  const [togglingId, setTogglingId] = useState(null);
+  const handleToggleApproved = async (review) => {
+    const next = !review.approved;
+    setTogglingId(String(review._id));
+    try {
+      const res = await fetch('/api/admin/reviews', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productSlug: review.productSlug, reviewId: String(review._id), approved: next }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      setReviews((prev) => prev.map((r) => (String(r._id) === String(review._id) ? { ...r, approved: data.approved } : r)));
+      toast.success(next ? 'Đã duyệt — đánh giá sẽ hiển thị công khai' : 'Đã ẩn đánh giá');
+    } catch (err) {
+      toast.error('Lỗi khi cập nhật: ' + err.message);
+    } finally {
+      setTogglingId(null);
+    }
+  };
+
   const formatDate = (dateStr) => {
     if (!dateStr) return '—';
     return new Date(dateStr).toLocaleDateString('vi-VN', {
@@ -186,6 +208,7 @@ export default function AdminReviewsPage() {
                     <th className="text-left px-4 py-3 font-semibold text-[#64748b] text-xs uppercase tracking-wide">Sao</th>
                     <th className="text-left px-4 py-3 font-semibold text-[#64748b] text-xs uppercase tracking-wide">Nội dung</th>
                     <th className="text-left px-4 py-3 font-semibold text-[#64748b] text-xs uppercase tracking-wide">Ngày</th>
+                    <th className="text-center px-4 py-3 font-semibold text-[#64748b] text-xs uppercase tracking-wide">Trạng thái</th>
                     <th className="text-center px-4 py-3 font-semibold text-[#64748b] text-xs uppercase tracking-wide">Xóa</th>
                   </tr>
                 </thead>
@@ -253,6 +276,20 @@ export default function AdminReviewsPage() {
 
                       {/* Date */}
                       <td className="px-4 py-3 text-gray-400 text-xs whitespace-nowrap">{formatDate(review.createdAt)}</td>
+
+                      {/* Approval */}
+                      <td className="px-4 py-3 text-center whitespace-nowrap">
+                        <button
+                          onClick={() => handleToggleApproved(review)}
+                          disabled={togglingId === String(review._id)}
+                          className={`px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-colors disabled:opacity-50 ${review.approved
+                            ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'
+                            : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'}`}
+                          title={review.approved ? 'Bấm để ẩn khỏi trang sản phẩm' : 'Bấm để duyệt và hiển thị công khai'}
+                        >
+                          {review.approved ? 'Đã duyệt' : 'Chờ duyệt'}
+                        </button>
+                      </td>
 
                       {/* Delete */}
                       <td className="px-4 py-3 text-center">

@@ -619,7 +619,8 @@ const Editor: FC<Props> = ({
   const updateKeywords: ChangeEventHandler<HTMLInputElement> = ({ target }) =>
     setPost({ ...post, keywords: target.value });
 
-  const updateSeoValue = (result: SeoResult) => setPost({ ...post, ...result });
+  // Dùng functional update: tránh closure cũ ghi đè thay đổi khác khi SEOForm gọi onChange liên tiếp.
+  const updateSeoValue = (result: SeoResult) => setPost((prev) => ({ ...prev, ...result }));
 
   const updateThumbnail = (thumb: File | string) =>
     setPost((prev) => ({ ...prev, thumbnail: thumb }));

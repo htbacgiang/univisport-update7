@@ -527,7 +527,7 @@ export default function ShirtUniviPage() {
           </div>
           <p className="text-base mb-4">
             Có thể tham khảo thêm cách Univi trình bày yếu tố chi phí qua bài viết{' '}
-            <Link href="/bai-viet/bao-gia-may-dong-phuc-phong-tap" className="font-semibold text-[#105d97]">
+            <Link href="/bai-viet/bao-gia-may-dong-phuc-phong-tap-8-yeu-to-can-biet" className="font-semibold text-[#105d97]">
               báo giá may đồng phục
             </Link>{' '}
             như một khung tham chiếu, dù cấu hình sơ mi công sở cần báo giá riêng theo brief thực tế.

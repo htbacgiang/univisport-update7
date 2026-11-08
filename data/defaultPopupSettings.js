@@ -114,7 +114,7 @@ export const DEFAULT_POPUP_SETTINGS = {
     title: "Đăng ký tư vấn & Báo giá đồng phục UniVi",
     subtitle: "Nhận báo giá chi tiết, xem mẫu vải tận nơi & thiết kế 3D miễn phí trong 15 phút",
     autoCloseSeconds: 20, // Tự động đóng sau 20s
-    delaySeconds: 2,      // Trễ 2s sau khi vào trang
+    delaySeconds: 30,     // Trễ 30s sau khi vào trang trên desktop (Mobile không tự bật)
     pauseOnInteraction: true, // Nếu người dùng tương tác thì dừng đếm ngược
     displayFrequency: "always", // "always" hoặc "once_per_session"
   },

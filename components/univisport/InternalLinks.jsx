@@ -19,9 +19,9 @@ export default function InternalLinks({
     { name: 'Đồng phục Pickleball', slug: '/dong-phuc-pickleball' },
     { name: 'Đồng phục MMA', slug: '/dong-phuc-mma' },
     { name: 'Đồng phục Golf - Tennis', slug: '/dong-phuc-golf-tennis' },
-    { name: 'Đồng phục áo Polo', slug: '/dong-phuc-ao-polo' },
-    { name: 'Đồng phục công sở', slug: '/dong-phuc-cong-so' },
-    { name: 'Đồng phục Team building', slug: '/dong-phuc-team-building' },
+    { name: 'Đồng phục áo Polo', slug: '/dong-phuc-polo' },
+    { name: 'Đồng phục công sở', slug: '/dong-phuc-so-mi' },
+    { name: 'Đồng phục Team building', slug: '/dong-phuc-teambuilding' },
     { name: 'Đồng phục áo gió', slug: '/dong-phuc-ao-gio' },
   ];
 
@@ -149,7 +149,7 @@ export default function InternalLinks({
               Khám phá <Link href="/san-pham" className="text-[#105d97] hover:underline font-medium">bộ sưu tập đồng phục</Link> đa dạng của Đồng phục Univi,
               từ <Link href="/dong-phuc-gym" className="text-[#105d97] hover:underline font-medium">đồng phục gym</Link>,
               <Link href="/dong-phuc-chay-bo" className="text-[#105d97] hover:underline font-medium">đồng phục chạy bộ</Link> đến
-              <Link href="/dong-phuc-cong-so" className="text-[#105d97] hover:underline font-medium">đồng phục công sở</Link>.
+              <Link href="/dong-phuc-so-mi" className="text-[#105d97] hover:underline font-medium">đồng phục công sở</Link>.
               Tìm hiểu thêm về <Link href="/gioi-thieu" className="text-[#105d97] hover:underline font-medium">chúng tôi</Link> hoặc
               <Link href="/lien-he" className="text-[#105d97] hover:underline font-medium">liên hệ</Link> để được tư vấn.
             </>

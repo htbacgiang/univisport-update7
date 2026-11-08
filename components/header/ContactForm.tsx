@@ -75,7 +75,7 @@ export default function ContactForm({
   isModal = false,
   isOpen,
   autoCloseSeconds = 20,
-  delayMs = 2000,
+  delayMs = 30000,
   pauseOnInteraction = true,
   title = "Đăng ký tư vấn & Báo giá đồng phục UniVi",
   subtitle = "Nhận bảng giá ưu đãi, catalogue mẫu vải & thiết kế 3D demo miễn phí trong 15 phút!",
@@ -135,6 +135,7 @@ export default function ContactForm({
     }
     hasDismissedThisPageLoad = true;
     setInternalOpen(false);
+    resetTurnstile();
 
     if (typeof window !== "undefined" && storageKey && displayFrequency === "once_per_session") {
       try {
@@ -145,6 +146,17 @@ export default function ContactForm({
     }
     onClose?.();
   }, [displayFrequency, storageKey, onClose]);
+
+  // Xóa token Turnstile khi modal đóng để đảm bảo token luôn mới khi mở lại
+  useEffect(() => {
+    if (isModal && !isCurrentlyOpen) {
+      setTurnstileToken("");
+      setTurnstileError("");
+    }
+  }, [isModal, isCurrentlyOpen]);
+
+  // Chỉ tải Turnstile khi form hiển thị: nếu là popup (isModal=true) thì chỉ tải khi popup đang mở (isCurrentlyOpen=true)
+  const shouldRenderTurnstile = Boolean(siteKey) && (!isModal || isCurrentlyOpen);
 
   // Xử lý khi người dùng tương tác với form
   const handleUserInteraction = useCallback(() => {
@@ -173,7 +185,8 @@ export default function ContactForm({
       return () => clearTimeout(openTimer);
     }
 
-    // Nếu parent truyền isOpen rõ ràng (như Navbar), không can thiệp delay nội bộ
+    // Nếu parent truyền isOpen rõ ràng (như Navbar hoặc các nút CTA thủ công),
+    // popup thủ công vẫn hoạt động bình thường trên mọi thiết bị và mọi trang!
     if (typeof isOpen === "boolean") {
       if (isOpen) {
         setCountdown(autoCloseSeconds);
@@ -182,12 +195,24 @@ export default function ContactForm({
       return;
     }
 
-    // Popup tự động chỉ hiển thị duy nhất ở trang chủ
+    // 1. Popup tự động CHỈ hiển thị duy nhất ở trang chủ (trang khác homepage không tự bật)
     const currentPath = typeof window !== "undefined" ? window.location.pathname : "";
     if (currentPath !== "/" && currentPath !== "") {
       return;
     }
 
+    // 2. Mobile (lần đầu truy cập hoặc lần truy cập sau): Hoàn toàn KHÔNG tự bật popup
+    const isTouchOrSmallScreen =
+      window.matchMedia?.("(max-width: 767px)").matches || window.innerWidth < 768;
+    const isMobileUA =
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(
+        navigator.userAgent || ""
+      );
+    if (isTouchOrSmallScreen || isMobileUA) {
+      return;
+    }
+
+    // 3. Desktop: Không tự bật nếu đã đóng trong lần tải trang này hoặc đang mở
     if (hasDismissedThisPageLoad || internalOpen || hasOpenedThisPageLoad) {
       return;
     }
@@ -202,13 +227,16 @@ export default function ContactForm({
       }
     }
 
+    // 4. Desktop: Tự động bật sau 30 giây (mặc định 30000ms)
+    const autoOpenDelay = Math.max(30000, Number(delayMs) || 30000);
+
     const openTimer = setTimeout(() => {
       hasOpenedThisPageLoad = true;
       setInternalOpen(true);
       setCountdown(autoCloseSeconds);
       setIsInteracted(false);
       onOpen?.();
-    }, delayMs);
+    }, autoOpenDelay);
 
     return () => clearTimeout(openTimer);
   }, [isModal, forceShow, delayMs, autoCloseSeconds, displayFrequency, storageKey, isOpen, internalOpen, onOpen]);
@@ -631,9 +659,9 @@ export default function ContactForm({
               )}
             </div>
 
-            {/* Turnstile Widget */}
+            {/* Turnstile Widget - Chỉ tải khi popup mở hoặc form dạng inline */}
             <div className="flex flex-col gap-1 min-h-[65px] justify-center">
-              {siteKey ? (
+              {shouldRenderTurnstile ? (
                 <Turnstile
                   ref={turnstileRef}
                   siteKey={siteKey}
@@ -657,9 +685,13 @@ export default function ContactForm({
                     language: "vi",
                   }}
                 />
-              ) : (
+              ) : !siteKey ? (
                 <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800">
                   Turnstile Site Key chưa được cấu hình.
+                </div>
+              ) : (
+                <div className="min-h-[65px] flex items-center justify-center text-xs text-gray-400">
+                  Đang khởi tạo bảo mật Turnstile...
                 </div>
               )}
               {errors.turnstile && (
@@ -809,14 +841,14 @@ export default function ContactForm({
                     </span>
                   )}
 
-                  {/* Nút đóng góc phải */}
+                  {/* Nút đóng góc phải: Chuẩn kích thước 44 × 44px theo khuyến nghị WCAG */}
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-transform hover:rotate-90 duration-200"
+                    className="w-[44px] h-[44px] min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center bg-white/15 hover:bg-white/25 active:bg-white/35 text-white transition-all hover:rotate-90 duration-200 focus:outline-none focus:ring-2 focus:ring-white/40 cursor-pointer"
                     aria-label="Đóng popup"
                   >
-                    <FaTimes size={14} className="sm:w-4 sm:h-4" />
+                    <FaTimes size={18} className="w-[18px] h-[18px]" />
                   </button>
                 </div>
               </div>

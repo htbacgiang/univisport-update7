@@ -18,7 +18,7 @@ export function normalizePopupConfig(raw: any): PopupSettingsConfig {
     title: raw.defaultPopup?.title || DEFAULT_POPUP_SETTINGS.defaultPopup.title,
     subtitle: raw.defaultPopup?.subtitle || DEFAULT_POPUP_SETTINGS.defaultPopup.subtitle,
     autoCloseSeconds: Number(raw.defaultPopup?.autoCloseSeconds) > 0 ? Number(raw.defaultPopup.autoCloseSeconds) : 20,
-    delaySeconds: Number(raw.defaultPopup?.delaySeconds) >= 0 ? Number(raw.defaultPopup.delaySeconds) : 2,
+    delaySeconds: Number(raw.defaultPopup?.delaySeconds) >= 0 ? Number(raw.defaultPopup.delaySeconds) : 30,
     pauseOnInteraction: raw.defaultPopup?.pauseOnInteraction !== false,
     displayFrequency: raw.defaultPopup?.displayFrequency === "once_per_session" ? "once_per_session" : "always",
   };

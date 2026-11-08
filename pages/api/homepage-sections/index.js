@@ -8,7 +8,7 @@ const DEFAULT_SECTIONS = [
   { title: "Đồng Phục Yoga", category: "dong-phuc-yoga", viewAllLink: "/dong-phuc-yoga", order: 2, isVisible: true, productLimit: 12 },
   { title: "Đồng Phục Áo Gió", category: "dong-phuc-ao-gio", viewAllLink: "/dong-phuc-ao-gio", order: 3, isVisible: true, productLimit: 12 },
   { title: "Đồng Phục Golf - Tennis", category: "dong-phuc-golf-tennis", viewAllLink: "/dong-phuc-golf-tennis", order: 4, isVisible: true, productLimit: 12 },
-  { title: "Đồng Phục Áo Polo", category: "dong-phuc-ao-polo", viewAllLink: "/dong-phuc-ao-polo", order: 5, isVisible: true, productLimit: 12 },
+  { title: "Đồng Phục Áo Polo", category: "dong-phuc-ao-polo", viewAllLink: "/dong-phuc-polo", order: 5, isVisible: true, productLimit: 12 },
 ];
 
 const handler = async (req, res) => {

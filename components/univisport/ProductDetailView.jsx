@@ -16,6 +16,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import parse from 'html-react-parser';
 import ContactForm from '../header/ContactForm';
+import { Turnstile } from '@marsidev/react-turnstile';
 import ProductSlider from './ProductSlider';
 import {
   setColorIndex,
@@ -389,6 +390,18 @@ function ProductReviews({ productSlug, initialRating, initialReviewCount }) {
   const [nameError, setNameError] = useState('');
   const [ratingError, setRatingError] = useState('');
 
+  // Sprint 0.5.1A: Cloudflare Turnstile cho form đánh giá (server xác minh).
+  // Chỉ tải widget khi người dùng bắt đầu nhập để không ảnh hưởng tốc độ trang.
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '';
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const [turnstileError, setTurnstileError] = useState('');
+  const turnstileRef = useRef(null);
+  const showTurnstile = Boolean(turnstileSiteKey) && Boolean(name || rating || comment);
+  const resetTurnstile = () => {
+    setTurnstileToken('');
+    try { turnstileRef.current?.reset(); } catch (_) { /* widget chưa sẵn sàng */ }
+  };
+
   useEffect(() => {
     setLoading(true);
     fetch(`/api/products/${productSlug}/reviews`)
@@ -412,6 +425,7 @@ function ProductReviews({ productSlug, initialRating, initialReviewCount }) {
 
     if (!name.trim()) { setNameError('Vui lòng nhập tên của bạn'); valid = false; }
     if (!rating) { setRatingError('Vui lòng chọn số sao'); valid = false; }
+    if (!turnstileToken) { setTurnstileError('Vui lòng xác minh bảo mật bên dưới'); valid = false; }
     if (!valid) return;
 
     setSubmitting(true);
@@ -419,22 +433,20 @@ function ProductReviews({ productSlug, initialRating, initialReviewCount }) {
       const res = await fetch(`/api/products/${productSlug}/reviews`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim(), rating, comment: comment.trim() }),
+        body: JSON.stringify({ name: name.trim(), rating, comment: comment.trim(), turnstileToken }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Có lỗi xảy ra');
-      setReviews((prev) => [data.review, ...prev]);
-      setReviewCount(data.reviewCount);
-      if (data.baseRating !== undefined && data.baseRating !== null) setBaseRating(data.baseRating);
-      if (data.baseReviewCount !== undefined && data.baseReviewCount !== null) setBaseReviewCount(data.baseReviewCount);
+      // Review mới chờ admin duyệt → KHÔNG thêm vào danh sách / không đổi số đếm.
       setName('');
       setRating(0);
       setComment('');
       setSubmitSuccess(true);
-      setTimeout(() => setSubmitSuccess(false), 4000);
+      setTimeout(() => setSubmitSuccess(false), 6000);
     } catch (err) {
       setSubmitError(err.message);
     } finally {
+      resetTurnstile();
       setSubmitting(false);
     }
   };
@@ -520,7 +532,7 @@ function ProductReviews({ productSlug, initialRating, initialReviewCount }) {
               <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
-              Cảm ơn bạn đã đánh giá! Đánh giá của bạn đã được gửi thành công.
+              Cảm ơn bạn! Đánh giá đã được gửi và sẽ hiển thị sau khi được duyệt.
             </div>
           )}
           {submitError && (
@@ -569,9 +581,25 @@ function ProductReviews({ productSlug, initialRating, initialReviewCount }) {
               />
               <p className="text-xs text-gray-400 text-right mt-0.5">{comment.length}/1000</p>
             </div>
+            {showTurnstile && (
+              <div className="mb-4">
+                <Turnstile
+                  ref={turnstileRef}
+                  siteKey={turnstileSiteKey}
+                  onSuccess={(token) => { setTurnstileToken(token); setTurnstileError(''); }}
+                  onError={() => { setTurnstileToken(''); setTurnstileError('Xác minh thất bại. Vui lòng thử lại.'); }}
+                  onExpire={() => setTurnstileToken('')}
+                  options={{ theme: 'light', size: 'normal', language: 'vi' }}
+                />
+              </div>
+            )}
+            {turnstileError && <p className="text-xs text-red-500 -mt-2 mb-3">{turnstileError}</p>}
+            {!turnstileSiteKey && (
+              <p className="text-xs text-amber-700 mb-3">Chức năng gửi đánh giá tạm thời chưa khả dụng.</p>
+            )}
             <button
               type="submit"
-              disabled={submitting}
+              disabled={submitting || !turnstileSiteKey}
               className="flex items-center gap-2 bg-[#105d97] hover:bg-[#0e4a7a] disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium py-2.5 px-6 rounded-full transition-all duration-200 shadow hover:shadow-md"
             >
               {submitting ? (

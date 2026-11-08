@@ -110,7 +110,15 @@ const DirectPostView: React.FC<Props> = ({ post, randomFeedbacks = [] }) => {
           domNode.children
             ?.map((c: any) => c.data || (c.children?.map((sub: any) => sub.data || "").join("")) || "")
             .join("") || "";
-        if (text.includes("UNIVI SPORTS UNIFORM")) {
+        // Nhận diện khối liên hệ cuối bài. Giữ matcher cũ "UNIVI SPORTS UNIFORM"
+        // (bài cũ) và bổ sung tên chuẩn "ĐỒNG PHỤC UNIVI" (Fact Sheet v1.0) khi đi
+        // kèm slogan, để không bắt nhầm đoạn văn thường có chữ in hoa.
+        const normalizedText = text.normalize("NFC");
+        const isContactSignature =
+          normalizedText.includes("UNIVI SPORTS UNIFORM") ||
+          (normalizedText.includes("ĐỒNG PHỤC UNIVI") &&
+            normalizedText.includes("YOUR UNIFORM, YOUR BRAND"));
+        if (isContactSignature) {
           return (
             <p className="cta-contact-info" style={{ marginTop: "1.75rem" }}>
               {domToReact(domNode.children, parseOptions)}

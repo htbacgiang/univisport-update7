@@ -8,6 +8,8 @@ import {
   generateKnowledgePostDescription,
   generateKnowledgePostFaqs,
   generateKnowledgeSeoContent,
+  generateKnowledgeFeedbackDescription,
+  generateKnowledgeFeedbackOverview,
 } from "../../../lib/knowledgeBase";
 
 function stripHtml(html: string): string {
@@ -119,6 +121,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     colors,
     color1,
     color2,
+    customer,
+    industry,
+    location,
+    employeeCount,
+    serviceTags,
+    year,
+    overview,
   } = req.body || {};
 
   const validTypes = [
@@ -128,6 +137,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     "product_description",
     "product_seo_content",
     "color_name",
+    "feedback_description",
+    "feedback_overview",
   ];
 
   if (!type || !validTypes.includes(type)) {
@@ -574,6 +585,153 @@ Tuyệt đối KHÔNG bọc trong markdown code block, KHÔNG kèm lời dẫn n
         results: fallbackResults,
         fallback: true,
       });
+    }
+
+    // ----------------------------------------------------
+    // 6. TẠO MÔ TẢ NGẮN CHO FEEDBACK (FEEDBACK SHORT DESCRIPTION)
+    // ----------------------------------------------------
+    if (type === "feedback_description") {
+      const cust = (customer || title || "").trim();
+      if (!cust && !title) {
+        return res.status(400).json({
+          error: "Vui lòng nhập Tên khách hàng hoặc Tiêu đề trước khi tạo mô tả bằng Gemini AI.",
+        });
+      }
+
+      if (hasApiKey) {
+        try {
+          const knowledgeContext = buildKnowledgePromptContext({
+            category,
+            productName: `${title || ""} ${cust}`,
+            type: "feedback_description",
+          });
+
+          const prompt = `Bạn là chuyên gia truyền thông thương hiệu và PR cho thương hiệu thời trang & may đồng phục thể thao cao cấp Univi (dongphucunivi.com).
+Dưới đây là BỘ TRI THỨC CHUẨN (Source of Truth) của Univi từ /docs/knowledge:
+${knowledgeContext}
+
+Thông tin dự án Feedback / Khách hàng:
+- Tên khách hàng / Đơn vị: ${cust}
+${title ? `- Tiêu đề dự án: ${title}` : ""}
+${category ? `- Danh mục: ${category}` : ""}
+${industry ? `- Bộ môn / Ngành: ${industry}` : ""}
+${location ? `- Địa điểm: ${location}` : ""}
+${employeeCount ? `- Quy mô nhân sự: ${employeeCount}` : ""}
+${serviceTags ? `- Sản phẩm / Dịch vụ: ${serviceTags}` : ""}
+
+Yêu cầu:
+1. Viết DUY NHẤT một đoạn Mô tả ngắn gọn (Short Description) súc tích, ấn tượng, chuyên nghiệp (chiều dài tối ưu từ 80 đến 160 ký tự, tuyệt đối không quá 190 ký tự) để hiển thị trên thẻ bài viết Feedback của Univi.
+2. Nêu bật sự hài lòng của đối tác đối với giải pháp đồng phục Univi: công nghệ thoát ẩm UNI DRY 1 chiều, phom dáng chuẩn, vải bền đẹp, nâng tầm hình ảnh chuyên nghiệp.
+3. TUYỆT ĐỐI TUÂN THỦ TỪ CẤM từ Knowledge: KHÔNG dùng "số 1", "dẫn đầu", "hàng đầu", "giá rẻ nhất", "mua ngay/chốt đơn"...
+4. TUYỆT ĐỐI KHÔNG nhắc đến "QCVN 01:2017/BCT" hay từ viết tắt QCVN.
+5. Không đặt trong dấu ngoặc kép, không dùng hashtag, không markdown.
+6. Chỉ trả về DUY NHẤT một đoạn văn bản mô tả ngắn gọn, không thêm lời dẫn hay giải thích nào khác.`;
+
+          const rawDesc = await callGemini(prompt, apiKeys);
+          let desc = rawDesc.trim().replace(/^["']|["']$/g, "").trim();
+
+          if (desc.length > 195) {
+            const lastPeriod = desc.lastIndexOf(".", 190);
+            if (lastPeriod > 100) {
+              desc = desc.slice(0, lastPeriod + 1);
+            } else {
+              const lastSpace = desc.lastIndexOf(" ", 185);
+              desc = (lastSpace > 100 ? desc.slice(0, lastSpace) : desc.slice(0, 185)) + "...";
+            }
+          }
+
+          return res.status(200).json({ description: desc, fallback: false });
+        } catch (geminiErr: any) {
+          console.warn("Lỗi Gemini feedback_description, chuyển sang Knowledge fallback:", geminiErr.message);
+        }
+      }
+
+      // Knowledge Base Fallback
+      const fallbackDesc = generateKnowledgeFeedbackDescription({
+        customer: cust,
+        title,
+        category,
+        industry,
+        location,
+        serviceTags,
+      });
+
+      return res.status(200).json({ description: fallbackDesc, fallback: true });
+    }
+
+    // ----------------------------------------------------
+    // 7. TẠO & TỐI ƯU TỔNG QUAN CHI TIẾT CHO FEEDBACK (FEEDBACK OVERVIEW)
+    // ----------------------------------------------------
+    if (type === "feedback_overview") {
+      const cust = (customer || title || "").trim();
+      const rawOverview = (overview || content || "").trim();
+
+      if (!cust && !title && stripHtml(rawOverview).length < 20) {
+        return res.status(400).json({
+          error: "Vui lòng nhập Tên khách hàng hoặc Tiêu đề dự án trước khi tạo Tổng quan bằng Gemini AI.",
+        });
+      }
+
+      if (hasApiKey) {
+        try {
+          const knowledgeContext = buildKnowledgePromptContext({
+            category,
+            productName: `${title || ""} ${cust}`,
+            type: "feedback_overview",
+          });
+
+          const prompt = `Bạn là chuyên gia viết case study và câu chuyện thành công của khách hàng (Client Success Story) cho thương hiệu may đồng phục cao cấp Univi (dongphucunivi.com).
+Dưới đây là BỘ TRI THỨC CHUẨN (Source of Truth) của Univi từ /docs/knowledge (về 5 dòng vải chuyên dụng, công nghệ UNI DRY, chính sách mockup 3D, quy trình may đo):
+${knowledgeContext}
+
+Thông tin dự án đối tác:
+- Tên khách hàng / Đơn vị: ${cust}
+${title ? `- Tiêu đề dự án: ${title}` : ""}
+${category ? `- Danh mục: ${category}` : ""}
+${industry ? `- Bộ môn / Ngành nghề: ${industry}` : ""}
+${location ? `- Tỉnh / Thành phố: ${location}` : ""}
+${employeeCount ? `- Quy mô nhân sự: ${employeeCount}` : ""}
+${serviceTags ? `- Sản phẩm / Dịch vụ đồng phục: ${serviceTags}` : ""}
+${year ? `- Năm hợp tác: ${year}` : ""}
+${rawOverview ? `- Nội dung phác thảo hiện có: ${stripHtml(rawOverview).slice(0, 1000)}` : ""}
+
+Yêu cầu biên soạn Tổng quan chi tiết (Overview) chuẩn SEO On-page:
+1. Soạn bài viết hoàn chỉnh, cấu trúc tiêu đề <h2> mạch lạc, sinh động, văn phong chuyên nghiệp, tôn vinh thương hiệu đối tác và Univi:
+   - <h2>Bối cảnh & Bài toán đồng phục của ${cust}</h2>: Nêu nhu cầu thực tế của đối tác (cần trang phục vận động thoải mái, thấm hút mồ hôi tốt, nâng tầm nhận diện thương hiệu đồng bộ).
+   - <h2>Giải pháp đồng phục từ Univi & Công nghệ thoát ẩm UNI DRY</h2>: Nêu giải pháp vải thể thao chuyên dụng phù hợp, ứng dụng công nghệ thoát ẩm UNI DRY một chiều thoáng khí, an toàn cho da, in thêu logo sắc nét (In PET DTF hoặc thêu vi tính bền bỉ).
+   - <h2>Trải nghiệm thực tế & Phản hồi từ ${cust}</h2>: Đánh giá cao về phom dáng chuẩn, đường kim mũi chỉ tinh xảo, sự hài lòng của học viên/nhân viên, và lợi ích của chính sách mockup 3D miễn phí, lưu trữ rập để tái đặt dễ dàng.
+   - Thêm hộp lời kêu gọi hành động (CTA) chuẩn B2B ở cuối bài mời các phòng tập, CLB, doanh nghiệp liên hệ Univi để nhận tư vấn và thiết kế mockup 3D miễn phí.
+2. TUYỆT ĐỐI TUÂN THỦ TỪ CẤM từ Knowledge: KHÔNG dùng "số 1", "dẫn đầu", "hàng đầu", "giá rẻ nhất", "mua ngay/chốt đơn", "chất lượng gấp đôi giá bằng một nửa"...
+3. TUYỆT ĐỐI KHÔNG nhắc đến "QCVN 01:2017/BCT" hay từ viết tắt QCVN trong bất kỳ câu chữ nào.
+4. ĐỊNH DẠNG ĐẦU RA BẮT BUỘC:
+   - Trả về DUY NHẤT mã HTML hợp lệ để hiển thị trong trình soạn thảo Rich Text (<p>, <h2>, <h3>, <ul>, <li>, <strong>, <div>...).
+   - Tuyệt đối KHÔNG bọc trong khối code markdown (không dùng ba dấu backtick), KHÔNG kèm lời dẫn "Dưới đây là..." hay giải thích bên ngoài.`;
+
+          const generatedHtml = await callGemini(prompt, apiKeys);
+          let cleanHtml = generatedHtml
+            .replace(/^```(?:html)?\s*/i, "")
+            .replace(/\s*```$/i, "")
+            .trim();
+
+          return res.status(200).json({ overview: cleanHtml, content: cleanHtml, fallback: false });
+        } catch (geminiErr: any) {
+          console.warn("Lỗi Gemini feedback_overview, chuyển sang Knowledge fallback:", geminiErr.message);
+        }
+      }
+
+      // Knowledge Base Fallback
+      const fallbackHtml = generateKnowledgeFeedbackOverview({
+        customer: cust,
+        title,
+        category,
+        industry,
+        location,
+        employeeCount,
+        serviceTags,
+        year,
+      });
+
+      return res.status(200).json({ overview: fallbackHtml, content: fallbackHtml, fallback: true });
     }
   } catch (error: any) {
     console.error("Lỗi Gemini API generate:", error);

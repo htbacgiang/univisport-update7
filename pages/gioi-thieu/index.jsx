@@ -11,7 +11,6 @@ import PartnersSection from "../../components/univisport/PartnersSection";
 export default function AboutUs({ meta }) {
   const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef(null);
-  const yearsExperience = new Date().getFullYear() - 2017;
 
   const toggleMute = () => {
     if (videoRef.current) {
@@ -41,7 +40,7 @@ export default function AboutUs({ meta }) {
       <div className="h-[80px]" />
 
       <h1 className="sr-only">
-        Giới thiệu Đồng Phục Univi – Xưởng may đồng phục thể thao {yearsExperience} năm kinh nghiệm tại Hà Nội
+        Giới thiệu Đồng Phục Univi – Giải pháp đồng phục thể thao chuyên nghiệp, thành lập năm 2017
       </h1>
 
       {/* Hero Video */}
@@ -78,7 +77,7 @@ export default function AboutUs({ meta }) {
               Câu chuyện của chúng tôi
             </p>
             <h2 className="text-xl md:text-2xl font-medium tracking-tight leading-6 text-gray-900 uppercase">
-              I. Hành trình <span className="text-[#105d97]">{yearsExperience} năm</span> phát triển
+              I. Hành trình phát triển <span className="text-[#105d97]">từ năm 2017</span>
             </h2>
             <div className="w-16 h-1 mx-auto mt-2 rounded-full bg-[#105d97]" />
           </div>
@@ -86,10 +85,10 @@ export default function AboutUs({ meta }) {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-2">
               <p className="text-gray-700 leading-6 text-base">
-                <span className="font-semibold text-[#105d97]">Đồng Phục Univi</span> là đơn vị  tiên phong cung cấp giải pháp đồng phục thể thao chuyên nghiệp cho các chuỗi phòng tập và đội nhóm thể thao tại Việt Nam
+                <span className="font-semibold text-[#105d97]">Đồng Phục Univi</span> is TIÊN PHONG cung cấp giải pháp đồng phục thể thao chuyên nghiệp cho các chuỗi phòng tập và các đội nhóm tập Gym, Fitness, Pickleball, Yoga, Running, Pilates, MMA... tại Việt Nam.
               </p>
               <p className="text-gray-700 leading-6 text-base">
-                Với hơn <span className="font-semibold text-[#105d97]">{yearsExperience} năm kinh nghiệm</span> trong lĩnh vực thiết kế đồng phục, chúng tôi đã trở thành một cái tên quen thuộc trong ngành thời trang đồng phục.
+                Thành lập năm <span className="font-semibold text-[#105d97]">2017</span>, Univi khởi đầu với đồng phục doanh nghiệp và từ năm 2023 tập trung vào đồng phục thể thao chuyên sâu – từ thiết kế, lựa chọn chất liệu đến sản xuất và kiểm soát chất lượng.
               </p>
               <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-100 space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -144,11 +143,11 @@ export default function AboutUs({ meta }) {
                   </div>
                   <div className="flex items-center gap-2">
                     <Factory className="w-4 h-4 text-[#105d97]" />
-                    <span><strong>Xưởng sản xuất:</strong> 2.000m²</span>
+                    <span><strong>Nhà máy:</strong> khoảng 2.000 m² tại Chương Mỹ, Hà Nội</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Zap className="w-4 h-4 text-[#105d97]" />
-                    <span><strong>Công suất:</strong> 100.000 sản phẩm/tháng</span>
+                    <span><strong>Công suất:</strong> khoảng 100.000 sản phẩm/tháng</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Globe className="w-4 h-4 text-[#105d97]" />
@@ -156,16 +155,21 @@ export default function AboutUs({ meta }) {
                   </div>
                   <div className="flex items-start gap-2 col-span-1 md:col-span-2">
                     <Users className="w-4 h-4 text-[#105d97] mt-0.5" />
-                    <span><strong>Khách hàng:</strong> 1000+ doanh nghiệp, phòng tập và câu lạc bộ thể thao.</span>
+                    <span><strong>Khách hàng:</strong> doanh nghiệp, phòng tập và câu lạc bộ thể thao trên toàn quốc.</span>
                   </div>
                 </div>
+                <p className="text-sm text-gray-700 border-t border-gray-200 pt-3">
+                  <Link href="/xuong-may-dong-phuc-univi" className="font-medium text-[#105d97] hover:underline">
+                    Xem chi tiết nhà máy sản xuất Đồng Phục Univi
+                  </Link>
+                </p>
               </div>
             </div>
 
             <div className="overflow-hidden rounded-2xl shadow-lg group">
               <Image
                 src="/images/gioi-thieu/xuong-san-xuat.jpg"
-                alt="Xưởng sản xuất đồng phục thể thao Đồng Phục Univi tại phường Chương Mỹ, Hà Nội — diện tích 2.000m²"
+                alt="Khu vực sản xuất đồng phục thể thao của Đồng Phục Univi"
                 width={800}
                 height={600}
                 className="object-cover w-full transition-transform duration-700 group-hover:scale-105"
@@ -200,7 +204,7 @@ export default function AboutUs({ meta }) {
                 <ul className="space-y-3 text-gray-700 leading-6">
                   <li className="flex items-start gap-2">
                     <CircleCheckBig className="w-4 h-4 text-[#105d97] mt-1 shrink-0" />
-                    <span>Univi định hướng trở thành biểu tượng sáng tạo hàng đầu trong lĩnh vực Đồng phục tại Việt Nam, đặc biệt là vị trí số 1 trong mảng Đồng Phục Thể Thao chuyên sâu.</span>
+                    <span>Univi định hướng phát triển theo hướng sáng tạo trong lĩnh vực Đồng phục tại Việt Nam, đặc biệt trong mảng Đồng Phục Thể Thao chuyên sâu.</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CircleCheckBig className="w-4 h-4 text-[#105d97] mt-1 shrink-0" />
@@ -303,7 +307,8 @@ export default function AboutUs({ meta }) {
 
 // ─── SERVER SIDE PROPS ────────────────────────────────────────
 export async function getServerSideProps() {
-  const yearsExperience = new Date().getFullYear() - 2017;
+  // Brand facts: Fact Sheet v1.0 (08/11/2026). Dùng năm thành lập cố định 2017 —
+  // KHÔNG tự tính thời gian hoạt động theo năm hiện tại.
 
   // ── AboutPage + BreadcrumbList schema ──────────────────────
   const schema = [
@@ -323,7 +328,7 @@ export async function getServerSideProps() {
       "@type": "AboutPage",
       "@id": "https://dongphucunivi.com/gioi-thieu#webpage",
       "name": "Giới Thiệu Đồng Phục Univi — Xưởng May Đồng Phục Thể Thao Chuyên Dụng",
-      "description": `Đồng Phục Univi thành lập năm 2017, xưởng 2.000m² tại phường Chương Mỹ, Hà Nội. Chuyên đồng phục Gym, Yoga, Pickleball cho phòng tập & doanh nghiệp B2B. Hơn ${yearsExperience} năm kinh nghiệm, 1000+ khách hàng tin tưởng, công suất 100.000 sản phẩm/tháng.`,
+      "description": "Đồng Phục Univi thành lập năm 2017, cung cấp giải pháp đồng phục thể thao chuyên nghiệp cho chuỗi phòng tập, câu lạc bộ và đội nhóm tại Việt Nam. Nhà máy đặt tại Chương Mỹ, Hà Nội.",
       "url": "https://dongphucunivi.com/gioi-thieu",
       "inLanguage": "vi-VN",
       "isPartOf": { "@id": "https://dongphucunivi.com/#website" },
@@ -336,8 +341,8 @@ export async function getServerSideProps() {
       "primaryImageOfPage": {
         "@type": "ImageObject",
         "url": "https://dongphucunivi.com/images/gioi-thieu/xuong-san-xuat.jpg",
-        "width": 1200,
-        "height": 630,
+        "width": 2253,
+        "height": 1230,
       },
       "speakable": {
         "@type": "SpeakableSpecification",
@@ -347,27 +352,27 @@ export async function getServerSideProps() {
   ];
 
   const meta = {
-    title: `Đồng Phục Univi: Xưởng May ${yearsExperience} Năm Kinh Nghiệm Tại Hà Nội`,
-    description: `Đồng Phục Univi thành lập 2017 tại Hà Nội — xưởng 2.000m², công suất 100.000 sp/tháng, ${yearsExperience}+ năm kinh nghiệm. Chuyên đồng phục Gym, Yoga, Pickleball cho phòng tập & doanh nghiệp. Vải UNI DRY kiểm định QCVN. Thiết kế miễn phí.`,
-    keywords: `giới thiệu Đồng Phục Univi, xưởng may đồng phục Hà Nội, đồng phục thể thao chuyên dụng, đồng phục Gym Yoga Pickleball, công nghệ UNI DRY, kiểm định QCVN, ${yearsExperience} năm kinh nghiệm`,
+    title: "Giới Thiệu Đồng Phục Univi – Đồng Phục Thể Thao B2B Từ 2017",
+    description: "Đồng Phục Univi thành lập năm 2017, cung cấp giải pháp đồng phục thể thao B2B cho chuỗi phòng tập và đội nhóm Gym, Yoga, Pilates, Pickleball. Nhà máy tại Chương Mỹ, Hà Nội.",
+    keywords: "giới thiệu Đồng Phục Univi, Đồng Phục Univi thành lập 2017, đồng phục thể thao B2B, đồng phục Gym Yoga Pilates Pickleball, công nghệ UNI DRY",
     robots: "index, follow",
     author: "Đồng Phục Univi",
     canonical: "https://dongphucunivi.com/gioi-thieu",
     og: {
-      title: `Đồng Phục Univi: Xưởng May ${yearsExperience} Năm Kinh Nghiệm`,
-      description: `Xưởng sản xuất đồng phục thể thao chuyên dụng tại Hà Nội — ${yearsExperience}+ năm, 2.000m², 100.000 sp/tháng. Vải UNI DRY nhập khẩu, kiểm định QCVN .`,
+      title: "Giới Thiệu Đồng Phục Univi – Thành Lập Năm 2017",
+      description: "Giải pháp đồng phục thể thao B2B cho chuỗi phòng tập và đội nhóm. Thành lập năm 2017, nhà máy tại Chương Mỹ, Hà Nội.",
       type: "website",
       image: "https://dongphucunivi.com/images/gioi-thieu/xuong-san-xuat.jpg",
-      imageWidth: "1200",
-      imageHeight: "630",
-      imageAlt: "Xưởng sản xuất đồng phục thể thao Đồng Phục Univi tại phường Chương Mỹ, Hà Nội — diện tích 2.000m²",
+      imageWidth: "2253",
+      imageHeight: "1230",
+      imageAlt: "Khu vực sản xuất đồng phục thể thao của Đồng Phục Univi",
       url: "https://dongphucunivi.com/gioi-thieu",
       site_name: "Đồng Phục Univi",
     },
     twitter: {
       card: "summary_large_image",
-      title: `Đồng Phục Univi: Xưởng May ${yearsExperience} Năm Kinh Nghiệm`,
-      description: `Xưởng sản xuất đồng phục thể thao chuyên dụng tại Hà Nội — ${yearsExperience}+ năm, 2.000m², 100.000 sp/tháng.`,
+      title: "Giới Thiệu Đồng Phục Univi – Thành Lập Năm 2017",
+      description: "Giải pháp đồng phục thể thao B2B cho chuỗi phòng tập và đội nhóm. Thành lập năm 2017, nhà máy tại Chương Mỹ, Hà Nội.",
       image: "https://dongphucunivi.com/images/gioi-thieu/xuong-san-xuat.jpg",
     },
     schema,

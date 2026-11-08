@@ -644,15 +644,15 @@ export const October20Popup: React.FC<October20PopupProps> = ({
           aria-describedby="univi-october20-wishes"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Nút đóng (×) sang trọng ở góc trên bên phải */}
+          {/* Nút đóng (×) sang trọng ở góc trên bên phải - Chuẩn 44 × 44px WCAG */}
           <button
             ref={closeButtonRef}
             onClick={handleClose}
-            className="absolute top-3 right-3 sm:top-5 sm:right-5 z-30 p-2.5 sm:p-3 rounded-full bg-white/60 hover:bg-white text-stone-600 hover:text-rose-700 shadow-lg ring-1 ring-black/5 transition-all duration-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2"
+            className="absolute top-3 right-3 sm:top-5 sm:right-5 z-30 w-[44px] h-[44px] min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-white/70 hover:bg-white text-stone-600 hover:text-rose-700 shadow-lg ring-1 ring-black/5 transition-all duration-200 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 cursor-pointer"
             type="button"
             aria-label="Đóng thiệp chúc mừng ngày 20/10"
           >
-            <X size={22} aria-hidden="true" />
+            <X size={20} aria-hidden="true" />
           </button>
 
           {/* Khung nội dung có thể cuộn linh hoạt trên mobile */}
